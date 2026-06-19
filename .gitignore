@@ -1,0 +1,5 @@
+# local/preview artifacts
+.ghtok_tmp
+*.tmp
+.DS_Store
+Thumbs.db

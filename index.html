@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦉 Doby 的期末考複習樂園 — G5 Final Exam</title>
+<style>
+  :root{
+    --bg:#f4f7ff; --card:#ffffff; --ink:#243047; --muted:#6b7894;
+    --p1:#7c5cff; --p2:#22c1c3; --p3:#ffb020; --p4:#ff6b9d; --good:#27c093; --bad:#ff5d6c;
+    --line:#e7ecf7; --soft:#f0f3fc;
+    --shadow:0 8px 24px rgba(60,80,160,.12);
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Segoe UI','Microsoft JhengHei','PingFang TC',system-ui,sans-serif;
+    background:linear-gradient(180deg,#eef2ff,#f7f9ff 240px);
+    color:var(--ink); line-height:1.6; padding-bottom:60px;
+  }
+  header.top{
+    background:linear-gradient(120deg,var(--p1),var(--p2));
+    color:#fff; padding:26px 18px 22px; text-align:center; position:relative;
+    border-radius:0 0 26px 26px; box-shadow:var(--shadow);
+  }
+  header.top h1{margin:0; font-size:1.9rem; letter-spacing:.5px}
+  header.top p{margin:6px 0 0; opacity:.95; font-size:.98rem}
+  .allzh{
+    margin-top:14px; display:inline-block; background:rgba(255,255,255,.22);
+    border:1.5px solid rgba(255,255,255,.6); color:#fff; padding:8px 16px;
+    border-radius:999px; cursor:pointer; font-size:.92rem; font-weight:600;
+    backdrop-filter:blur(4px);
+  }
+  .allzh:hover{background:rgba(255,255,255,.34)}
+
+  nav#tabs{
+    display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
+    padding:14px 10px; position:sticky; top:0; z-index:50;
+    background:rgba(247,249,255,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav#tabs button{
+    border:none; background:#fff; color:var(--ink); padding:9px 15px;
+    border-radius:999px; cursor:pointer; font-size:.95rem; font-weight:600;
+    box-shadow:0 2px 8px rgba(60,80,160,.08); transition:.15s;
+  }
+  nav#tabs button:hover{transform:translateY(-2px)}
+  nav#tabs button.active{background:var(--p1); color:#fff; box-shadow:0 4px 14px rgba(124,92,255,.4)}
+
+  main{max-width:920px; margin:18px auto; padding:0 14px}
+  .subhead h2{font-size:1.6rem; margin:.2em 0}
+  .intro{color:var(--muted); margin-top:0}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:18px 20px; margin:16px 0; box-shadow:var(--shadow);
+  }
+  .card h3{margin:.1em 0 .6em; font-size:1.18rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+  .lesson h3{color:var(--p1)}
+  .fact{margin:.5em 0}
+  .note{background:var(--soft); border-left:5px solid var(--p2); padding:10px 14px; border-radius:10px; margin:10px 0}
+  .tip{background:#fff7e6; border-left:5px solid var(--p3); padding:10px 14px; border-radius:10px; margin:10px 0}
+  .example{background:#eefbf4; border-left:5px solid var(--good); padding:10px 14px; border-radius:10px; margin:10px 0}
+  ul.bilist{margin:.4em 0; padding-left:22px}
+  ul.bilist li{margin:.35em 0}
+
+  /* bilingual */
+  .bi{display:inline}
+  .bi .en{}
+  .zhbtn{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; margin:0 3px; padding:0; vertical-align:middle;
+    border:none; border-radius:50%; background:var(--p4); color:#fff;
+    font-size:.72rem; font-weight:700; cursor:pointer; line-height:1;
+    box-shadow:0 1px 4px rgba(255,107,157,.5);
+  }
+  .zhbtn:hover{filter:brightness(1.08)}
+  .zhbtn.on{background:var(--good)}
+  /* Chinese is HIDDEN by default (fail-safe). Only .zh.show reveals it. */
+  .zh{display:none}
+  .zh.show{
+    display:inline; background:#fff3f8; color:#b5306a; border-radius:6px;
+    padding:1px 7px; margin-left:3px; font-size:.96em;
+    box-shadow:inset 0 0 0 1px #ffd6e6;
+  }
+  /* 🔊 pronunciation button */
+  .spk{
+    border:none; background:var(--p2); color:#fff; border-radius:50%;
+    width:24px; height:24px; font-size:.8rem; cursor:pointer; line-height:1;
+    margin-left:6px; vertical-align:middle; box-shadow:0 1px 4px rgba(34,193,195,.5);
+  }
+  .spk:hover{filter:brightness(1.08)}
+  .spk:active{transform:scale(.9)}
+  .vterm{cursor:pointer}
+  .vterm:hover{text-decoration:underline}
+
+  /* tables */
+  .tablewrap{overflow-x:auto; margin:12px 0}
+  table{border-collapse:collapse; width:100%; font-size:.95rem}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top}
+  th{background:var(--p1); color:#fff; font-weight:600}
+  tbody tr:nth-child(even){background:var(--soft)}
+
+  /* vocab */
+  .vocabgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px}
+  .vcard{background:var(--soft); border-radius:14px; padding:12px 14px; border:1px solid var(--line)}
+  .vterm{font-weight:800; color:var(--p1); font-size:1.08rem; margin-bottom:3px}
+  .vdef{font-size:.93rem}
+
+  /* subject cards (home) */
+  .scards{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:8px}
+  .scard{cursor:pointer; border-radius:18px; padding:20px; color:#fff; text-align:center; transition:.15s; box-shadow:var(--shadow); border:none}
+  .scard:hover{transform:translateY(-4px) scale(1.02)}
+  .scard .se{font-size:2.4rem; display:block}
+  .scard .st{font-weight:800; font-size:1.15rem; margin-top:6px}
+  .scard .ss{font-size:.85rem; opacity:.9}
+
+  /* quiz */
+  .quizcard h3{color:var(--p4)}
+  .q{padding:12px 0; border-bottom:1px dashed var(--line)}
+  .q:last-of-type{border-bottom:none}
+  .qtext{font-weight:600; margin-bottom:8px}
+  .opts{display:flex; flex-direction:column; gap:8px}
+  .opt{
+    background:#fff; border:2px solid var(--line); border-radius:12px;
+    padding:9px 13px; cursor:pointer; transition:.12s; font-size:.96rem;
+  }
+  .opt:hover{border-color:var(--p1); background:var(--soft)}
+  .opt.done{cursor:default}
+  .opt.correct{border-color:var(--good); background:#e7faf2; font-weight:700}
+  .opt.wrong{border-color:var(--bad); background:#ffecef}
+  .explain{margin-top:8px; background:#fff7e6; border-radius:10px; padding:8px 12px; font-size:.92rem}
+  .scorebar{margin-top:14px; font-weight:800; font-size:1.05rem; background:var(--soft); border-radius:12px; padding:10px 14px; text-align:center}
+  .scorebar.win{background:#e7faf2; color:#0c8f63}
+  .btn{border:none; border-radius:12px; padding:9px 16px; font-weight:700; cursor:pointer; background:var(--p1); color:#fff; margin-top:10px}
+  .btn.small{padding:6px 12px; font-size:.9rem}
+  .btn.reset{background:var(--p2)}
+  .btn:hover{filter:brightness(1.06)}
+
+  /* match game */
+  .hint{color:var(--muted); font-size:.9rem; margin:.2em 0 .8em}
+  .matchwrap{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .mcol{display:flex; flex-direction:column; gap:8px}
+  .mcell{border:2px solid var(--line); background:#fff; border-radius:12px; padding:10px; cursor:pointer; text-align:center; font-size:.95rem; transition:.12s}
+  .mcell:hover{border-color:var(--p2)}
+  .mcell.sel{border-color:var(--p1); background:var(--soft); transform:scale(1.02)}
+  .mcell.matched{border-color:var(--good); background:#e7faf2; color:#0c8f63; cursor:default; opacity:.75}
+  .mcell.flash{border-color:var(--bad); background:#ffecef}
+
+  /* sort game */
+  .tray{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px}
+  .chip{border:2px solid var(--line); background:#fff; border-radius:999px; padding:8px 14px; cursor:pointer; font-size:.92rem; transition:.12s}
+  .chip:hover{border-color:var(--p3)}
+  .chip.sel{border-color:var(--p1); background:var(--soft); transform:scale(1.05)}
+  .chip.flash{border-color:var(--bad); background:#ffecef}
+  .chip.hidden{display:none}
+  .buckets{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .bucket{border:2.5px dashed var(--p2); border-radius:16px; padding:12px; min-height:90px; cursor:pointer; transition:.12s}
+  .bucket:hover{background:var(--soft)}
+  .bktitle{font-weight:800; color:var(--p2); text-align:center; margin-bottom:8px}
+  .bkitems{display:flex; flex-wrap:wrap; gap:6px}
+  .bkchip{background:#e7faf2; color:#0c8f63; border-radius:999px; padding:6px 12px; font-size:.88rem; font-weight:600}
+
+  /* math practice */
+  .mathq{padding:10px 0; border-bottom:1px dashed var(--line)}
+  .mathq:last-of-type{border-bottom:none}
+  .mathrow{display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap}
+  .mans{border:2px solid var(--line); border-radius:10px; padding:8px 12px; font-size:1rem; width:140px}
+  .mans:focus{border-color:var(--p1); outline:none}
+  .mfb{font-weight:700}
+  .mfb.ok{color:var(--good)}
+  .mfb.no{color:var(--bad)}
+
+  /* effects */
+  .star{position:absolute; font-size:1.6rem; animation:floatup .9s ease-out forwards; pointer-events:none}
+  @keyframes floatup{0%{opacity:1; transform:translateY(0) scale(.6)}100%{opacity:0; transform:translateY(-46px) scale(1.4)}}
+  .confetti{position:fixed; top:-30px; font-size:1.4rem; z-index:999; pointer-events:none; animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(102vh) rotate(540deg); opacity:.9}}
+
+  footer{text-align:center; color:var(--muted); font-size:.85rem; margin-top:30px}
+  @media(max-width:560px){
+    .matchwrap,.buckets{grid-template-columns:1fr}
+    header.top h1{font-size:1.5rem}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>🦉 Doby 的期末考複習樂園</h1>
+  <p>Grade 5 Final Exam · June 2026 · Korrnell Academy</p>
+  <button id="allzhbtn" class="allzh" onclick="toggleAllZh()">🌏 顯示全部中文</button>
+</header>
+
+<nav id="tabs"></nav>
+<main id="content"></main>
+<footer>made with ❤️ for Doby — 加油！You can do it! 💪</footer>
+
+<script>
+/* ============================================================
+   ENGINE  (bilingual / vocab / quiz / match / sort / math)
+   ============================================================ */
+const CONTENT = window.CONTENT = {};
+const TAB_ORDER = [
+  {key:'home',    label:'🏠 首頁'},
+  {key:'science', label:'🔬 Science'},
+  {key:'reading', label:'📖 Reading'},
+  {key:'grammar', label:'✍️ Grammar'},
+  {key:'math',    label:'🔢 Math'},
+];
+let activeKey='home', biCounter=0, allZh=false;
+
+/* ---- bilingual reveal (class-based: hidden by default, .show reveals) ---- */
+function bi(en,zh){
+  const id='z'+(biCounter++);
+  return `<span class="bi"><span class="en">${en}</span>`
+       + `<button class="zhbtn" type="button" title="顯示中文" onclick="event.stopPropagation();toggleZh('${id}',this)">中</button>`
+       + `<span class="zh" id="${id}">${zh}</span></span>`;
+}
+function syncAllZh(){          // keep the global button label honest with the actual DOM
+  const total=document.querySelectorAll('.zh').length;
+  const shown=document.querySelectorAll('.zh.show').length;
+  allZh = total>0 && shown===total;
+  const t=document.getElementById('allzhbtn'); if(t) t.textContent = allZh?'🙈 隱藏全部中文':'🌏 顯示全部中文';
+}
+function toggleZh(id,btn){const e=document.getElementById(id); if(!e)return; const on=e.classList.toggle('show'); if(btn)btn.classList.toggle('on',on); syncAllZh();}
+function toggleAllZh(){        // if anything is hidden -> show all; otherwise hide all (derived from DOM, not a stale flag)
+  const total=document.querySelectorAll('.zh').length;
+  const shown=document.querySelectorAll('.zh.show').length;
+  const turnOn = shown < total;
+  document.querySelectorAll('.zh').forEach(e=>e.classList.toggle('show',turnOn));
+  document.querySelectorAll('.zhbtn').forEach(b=>b.classList.toggle('on',turnOn));
+  allZh=turnOn;
+  document.getElementById('allzhbtn').textContent = turnOn?'🙈 隱藏全部中文':'🌏 顯示全部中文';
+}
+
+/* ---- 🔊 pronunciation (Web Speech API, works offline in most browsers) ---- */
+function speak(text){
+  try{
+    if(!('speechSynthesis' in window) || !text) return;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US'; u.rate=0.85; u.pitch=1.05;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function speakEl(el){ if(el) speak(el.getAttribute('data-say')); }
+
+/* ---- block rendering ---- */
+function renderBlock(b){
+  switch(b.type){
+    case 'fact':    return `<p class="fact">${bi(b.en,b.zh)}</p>`;
+    case 'note':    return `<div class="note">${bi(b.en,b.zh)}</div>`;
+    case 'tip':     return `<div class="tip">💡 ${bi(b.en,b.zh)}</div>`;
+    case 'example': return `<div class="example">📌 ${bi(b.en,b.zh)}</div>`;
+    case 'list':    return '<ul class="bilist">'+b.items.map(it=>`<li>${bi(it.en,it.zh)}</li>`).join('')+'</ul>';
+    case 'table':   return renderTable(b);
+    case 'html':    return b.html;
+    case 'subjectcards': return renderSubjectCards();
+    default: return '';
+  }
+}
+function renderTable(b){
+  let h='<div class="tablewrap"><table><thead><tr>'+b.cols.map(c=>`<th>${bi(c.en,c.zh)}</th>`).join('')+'</tr></thead><tbody>';
+  b.rows.forEach(r=>{h+='<tr>'+r.map(c=>`<td>${bi(c.en,c.zh)}</td>`).join('')+'</tr>';});
+  return h+'</tbody></table></div>';
+}
+function renderVocab(arr){
+  return '<div class="vocabgrid">'+arr.map(v=>`<div class="vcard"><div><span class="vterm" data-say="${v.term}" title="點一下聽發音" onclick="speakEl(this)">${v.term}</span><button class="spk" type="button" title="聽發音" data-say="${v.term}" onclick="speakEl(this)">🔊</button></div><div class="vdef">${bi(v.en,v.zh)}</div></div>`).join('')+'</div>';
+}
+function renderSubjectCards(){
+  const cards=[
+    {k:'science',e:'🔬',t:'Science',s:'地球的水系統',c:'linear-gradient(135deg,#22c1c3,#2a8cff)'},
+    {k:'reading',e:'📖',t:'Reading',s:'故事 · 概念 · 單字',c:'linear-gradient(135deg,#7c5cff,#b06bff)'},
+    {k:'grammar',e:'✍️',t:'Grammar & Writing',s:'文法 · 寫作',c:'linear-gradient(135deg,#ff6b9d,#ff9a6b)'},
+    {k:'math',e:'🔢',t:'Math',s:'時間 · 體積 · 百分比 · 對稱',c:'linear-gradient(135deg,#ffb020,#ff7a59)'},
+  ];
+  return '<div class="scards">'+cards.map(c=>`<button class="scard" style="background:${c.c}" onclick="show('${c.k}')"><span class="se">${c.e}</span><span class="st">${c.t}</span><span class="ss">${c.s}</span></button>`).join('')+'</div>';
+}
+
+/* ---- subject page ---- */
+function renderSubject(key){
+  const c=CONTENT[key];
+  if(!c) return '<div class="card">內容載入中… (還沒做好這一科)</div>';
+  let h='<section class="subject">';
+  h+=`<div class="subhead"><h2>${c.emoji||''} ${bi(c.title.en,c.title.zh)}</h2>`;
+  if(c.intro) h+=`<p class="intro">${bi(c.intro.en,c.intro.zh)}</p>`;
+  h+='</div>';
+  (c.sections||[]).forEach(s=>{
+    h+=`<div class="card lesson"><h3>${bi(s.heading.en,s.heading.zh)}</h3>`;
+    (s.blocks||[]).forEach(b=> h+=renderBlock(b));
+    h+='</div>';
+  });
+  if(c.vocab&&c.vocab.length){
+    h+=`<div class="card"><h3>📚 ${bi('Vocabulary','單字表 (點 中 看中文)')}</h3>`+renderVocab(c.vocab)+'</div>';
+  }
+  if(c.match){
+    h+=`<div class="card game"><h3>🎯 ${bi(c.match.title.en,c.match.title.zh)}</h3><div id="match-${key}"></div></div>`;
+  }
+  (c.sorts||[]).forEach((s,i)=>{
+    h+=`<div class="card game"><h3>🗂️ ${bi(s.title.en,s.title.zh)}</h3><div id="sort-${key}-${i}"></div></div>`;
+  });
+  (c.mathSets||[]).forEach((m,i)=>{
+    h+=`<div class="card game"><h3>🧮 ${bi(m.title.en,m.title.zh)}</h3><div id="math-${key}-${i}"></div></div>`;
+  });
+  if(c.quiz&&c.quiz.length){
+    h+=`<div class="card quizcard"><h3>📝 ${bi('Quiz — Test Yourself!','小測驗 — 考考自己！')}</h3><div id="quiz-${key}"></div></div>`;
+  }
+  return h+'</section>';
+}
+function initInteractive(key){
+  const c=CONTENT[key]; if(!c) return;
+  if(c.match) buildMatch(document.getElementById('match-'+key), c.match.pairs, key);
+  (c.sorts||[]).forEach((s,i)=> buildSort(document.getElementById('sort-'+key+'-'+i), s, key+i));
+  (c.mathSets||[]).forEach((m,i)=> buildMath(document.getElementById('math-'+key+'-'+i), m, key+i));
+  if(c.quiz) buildQuiz(document.getElementById('quiz-'+key), c.quiz, key);
+}
+
+/* ---- tabs ---- */
+function buildTabs(){
+  document.getElementById('tabs').innerHTML = TAB_ORDER.map(t=>`<button id="tab-${t.key}" onclick="show('${t.key}')">${t.label}</button>`).join('');
+}
+function show(key){
+  activeKey=key;
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.remove('active'));
+  const tb=document.getElementById('tab-'+key); if(tb)tb.classList.add('active');
+  const main=document.getElementById('content');
+  main.innerHTML = renderSubject(key);
+  initInteractive(key);
+  if(allZh){                                   // keep "show all Chinese" on after switching tabs
+    document.querySelectorAll('.zh').forEach(e=>e.classList.add('show'));
+    document.querySelectorAll('.zhbtn').forEach(b=>b.classList.add('on'));
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---- QUIZ ---- */
+const QUIZSTATE={};
+function buildQuiz(el, qs, key){
+  if(!el) return;
+  QUIZSTATE[key]={qs, answered:{}, score:0};
+  el.innerHTML = qs.map((q,i)=>`
+    <div class="q" id="${key}-q${i}">
+      <div class="qtext">Q${i+1}. ${bi(q.q.en,q.q.zh)}</div>
+      <div class="opts">${q.options.map((o,j)=>`<div class="opt" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}</div>`).join('')}</div>
+      <div class="explain" hidden>${q.explain?bi('💡 '+q.explain.en,'💡 '+q.explain.zh):''}</div>
+    </div>`).join('')
+    + `<div class="scorebar" id="score-${key}">${bi('Score','得分')}: 0 / ${qs.length}</div>`
+    + `<button class="btn reset" onclick="show(activeKey)">🔄 ${bi('Try again','重新測驗')}</button>`;
+}
+function answerQ(key,i,j){
+  const st=QUIZSTATE[key]; if(st.answered[i]!=null) return;
+  st.answered[i]=j;
+  const q=st.qs[i], correct=q.a;
+  const qd=document.getElementById(key+'-q'+i);
+  qd.querySelectorAll('.opt').forEach((b,k)=>{
+    b.classList.add('done');
+    if(k===correct) b.classList.add('correct');
+    if(k===j && j!==correct) b.classList.add('wrong');
+  });
+  const ex=qd.querySelector('.explain'); if(ex && ex.innerHTML.trim()) ex.hidden=false;
+  if(j===correct){st.score++; popStar(qd);}
+  const done=Object.keys(st.answered).length;
+  document.getElementById('score-'+key).innerHTML = `${bi('Score','得分')}: ${st.score} / ${st.qs.length}`;
+  if(done===st.qs.length) finishBar('score-'+key, st.score, st.qs.length);
+}
+
+/* ---- MATCH ---- */
+const MATCHSTATE={};
+function buildMatch(el, pairs, key){
+  if(!el) return;
+  const L=pairs.map((p,i)=>({t:p.l,id:i}));
+  const R=shuffle(pairs.map((p,i)=>({t:p.r,id:i})));
+  MATCHSTATE[key]={sel:null, matched:0, total:pairs.length};
+  el.innerHTML = `<p class="hint">${bi('Click an English word, then click its Chinese meaning.','先點英文單字，再點對應的中文意思。')}</p>
+    <div class="matchwrap">
+      <div class="mcol">${L.map(x=>`<div class="mcell" data-side="L" data-id="${x.id}" onclick="pickMatch('${key}','L',${x.id},this)">${x.t}<button class="spk" type="button" title="聽發音" data-say="${x.t}" onclick="event.stopPropagation();speakEl(this)">🔊</button></div>`).join('')}</div>
+      <div class="mcol">${R.map(x=>`<div class="mcell" data-side="R" data-id="${x.id}" onclick="pickMatch('${key}','R',${x.id},this)">${x.t}</div>`).join('')}</div>
+    </div>
+    <div class="scorebar" id="mscore-${key}">${bi('Matched','配對成功')}: 0 / ${pairs.length}</div>`;
+}
+function pickMatch(key,side,id,el){
+  const st=MATCHSTATE[key]; if(el.classList.contains('matched')) return;
+  if(!st.sel){ st.sel={side,id,el}; el.classList.add('sel'); return; }
+  if(st.sel.el===el){ el.classList.remove('sel'); st.sel=null; return; }
+  if(st.sel.side===side){ st.sel.el.classList.remove('sel'); st.sel={side,id,el}; el.classList.add('sel'); return; }
+  // different sides -> check
+  if(st.sel.id===id){
+    el.classList.add('matched'); st.sel.el.classList.add('matched');
+    el.classList.remove('sel'); st.sel.el.classList.remove('sel');
+    st.matched++; popStar(el);
+    document.getElementById('mscore-'+key).innerHTML=`${bi('Matched','配對成功')}: ${st.matched} / ${st.total}`;
+    if(st.matched===st.total) finishBar('mscore-'+key, st.matched, st.total);
+    st.sel=null;
+  }else{
+    const a=st.sel.el; a.classList.add('flash'); el.classList.add('flash');
+    setTimeout(()=>{a.classList.remove('flash','sel'); el.classList.remove('flash');},450);
+    st.sel=null;
+  }
+}
+
+/* ---- SORT (buckets) ---- */
+const SORTSTATE={};
+function buildSort(el, data, key){
+  if(!el) return;
+  const items=shuffle(data.items.map((it,i)=>({...it,i})));
+  SORTSTATE[key]={sel:null, placed:0, total:items.length};
+  el.innerHTML = `<p class="hint">${bi('Click a card, then click the correct box.','先點卡片，再點正確的分類框。')}</p>
+    <div class="tray" id="tray-${key}">${items.map(it=>`<div class="chip" id="chip-${key}-${it.i}" data-b="${it.b}" onclick="pickChip('${key}',${it.i},this)">${bi(it.en,it.zh)}</div>`).join('')}</div>
+    <div class="buckets">${data.buckets.map((b,bi2)=>`<div class="bucket" onclick="dropChip('${key}',${bi2})"><div class="bktitle">${bi(b.en,b.zh)}</div><div class="bkitems" id="bk-${key}-${bi2}"></div></div>`).join('')}</div>
+    <div class="scorebar" id="sscore-${key}">${bi('Placed','已分類')}: 0 / ${items.length}</div>`;
+}
+function pickChip(key,i,el){
+  const st=SORTSTATE[key]; if(el.classList.contains('hidden')) return;
+  if(st.sel) st.sel.el.classList.remove('sel');
+  if(st.sel && st.sel.i===i){ st.sel=null; return; }
+  st.sel={i, b:+el.dataset.b, el, label:el.querySelector('.en')?el.querySelector('.en').textContent:el.textContent};
+  el.classList.add('sel');
+}
+function dropChip(key,bucket){
+  const st=SORTSTATE[key]; if(!st.sel) return;
+  const sel=st.sel;
+  if(sel.b===bucket){
+    sel.el.classList.add('hidden');
+    const bk=document.getElementById('bk-'+key+'-'+bucket);
+    const span=document.createElement('span'); span.className='bkchip'; span.textContent=sel.label;
+    bk.appendChild(span); popStar(bk);
+    st.placed++;
+    document.getElementById('sscore-'+key).innerHTML=`${bi('Placed','已分類')}: ${st.placed} / ${st.total}`;
+    if(st.placed===st.total) finishBar('sscore-'+key, st.placed, st.total);
+    st.sel=null;
+  }else{
+    sel.el.classList.add('flash');
+    setTimeout(()=>{sel.el.classList.remove('flash','sel');},450);
+    st.sel=null;
+  }
+}
+
+/* ---- MATH practice ---- */
+const MATHSTATE={};
+function buildMath(el, m, key){
+  if(!el) return;
+  MATHSTATE[key]={m, correct:0, done:{}};
+  el.innerHTML = m.questions.map((q,i)=>`
+    <div class="mathq">
+      <div class="qtext">${i+1}. ${bi(q.q.en,q.q.zh)}</div>
+      <div class="mathrow">
+        <input class="mans" id="ans-${key}-${i}" placeholder="?" onkeydown="if(event.key==='Enter')checkMath('${key}',${i})">
+        <button class="btn small" onclick="checkMath('${key}',${i})">${bi('Check','檢查')}</button>
+        <span class="mfb" id="fb-${key}-${i}"></span>
+      </div>
+    </div>`).join('')
+    + `<div class="scorebar" id="mathscore-${key}">${bi('Correct','答對')}: 0 / ${m.questions.length}</div>`;
+}
+function norm(s){return String(s).trim().toLowerCase().replace(/\s+/g,'').replace(/,/g,'');}
+function checkMath(key,i){
+  const st=MATHSTATE[key]; const q=st.m.questions[i];
+  const inp=document.getElementById('ans-'+key+'-'+i);
+  const fb=document.getElementById('fb-'+key+'-'+i);
+  const val=norm(inp.value); if(val==='') return;
+  const accept=[q.ans].concat(q.accept||[]).map(norm);
+  let ok=accept.includes(val);
+  // numeric tolerance ONLY when the user typed a pure number (rejects "25abc", "6cm", etc.)
+  if(!ok && /^[-+]?\d*\.?\d+$/.test(val)){
+    const n=parseFloat(val);
+    accept.forEach(a=>{const an=parseFloat(a); if(!isNaN(an)&&Math.abs(n-an)<1e-9)ok=true;});
+  }
+  if(ok){
+    fb.textContent='✅ '+(allZh?'答對了!':'Correct!'); fb.className='mfb ok';
+    if(!st.done[i]){st.done[i]=1; st.correct++; popStar(fb);}
+    inp.disabled=true;
+  }else{
+    fb.innerHTML='❌ '+bi('Answer: '+q.ans,'答案：'+q.ans); fb.className='mfb no';
+    if(st.done[i]===undefined) st.done[i]=0;
+  }
+  document.getElementById('mathscore-'+key).innerHTML=`${bi('Correct','答對')}: ${st.correct} / ${st.m.questions.length}`;
+  const total=st.m.questions.length, answered=Object.keys(st.done).length;
+  if(answered===total && !st.finished){ st.finished=1; finishBar('mathscore-'+key, st.correct, total); }
+}
+
+/* ---- effects ---- */
+function popStar(target){
+  const r=target.getBoundingClientRect();
+  const s=document.createElement('span'); s.className='star'; s.textContent='⭐'; s.setAttribute('aria-hidden','true');
+  s.style.left=(r.left+r.width/2)+'px'; s.style.top=(r.top+window.scrollY)+'px'; s.style.position='absolute';
+  document.body.appendChild(s); setTimeout(()=>s.remove(),900);
+}
+function finishBar(id, score, total){
+  const el=document.getElementById(id); if(!el) return;
+  if(el.classList.contains('win')) return;   // one-shot: never stack banners / re-fire confetti
+  const pct=score/total;
+  let msg;
+  if(pct===1){msg='🏆 滿分！太棒了 Doby！ Perfect!'; confetti();}
+  else if(pct>=0.8){msg='🌟 很厲害！再檢查錯的地方就完美了！'; confetti();}
+  else if(pct>=0.6){msg='👍 不錯喔！多複習幾次會更好！';}
+  else {msg='💪 沒關係，再試一次！點「中」看中文幫助理解。';}
+  el.classList.add('win');
+  el.innerHTML += `<div style="margin-top:6px;font-size:.95rem">${msg}</div>`;
+}
+function confetti(){
+  const em=['🎉','⭐','🌟','🎊','✨','🥳'];
+  for(let i=0;i<32;i++){
+    const c=document.createElement('span'); c.className='confetti'; c.textContent=em[i%em.length]; c.setAttribute('aria-hidden','true');
+    c.style.left=Math.random()*100+'vw';
+    c.style.animationDuration=(1.6+Math.random()*1.4)+'s';
+    c.style.animationDelay=(Math.random()*0.4)+'s';
+    document.body.appendChild(c); setTimeout(()=>c.remove(),3200);
+  }
+}
+function shuffle(a){a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
+
+/* ============================================================
+   CONTENT — HOME
+   ============================================================ */
+CONTENT.home = {
+  emoji:'🏠',
+  title:{en:'Welcome, Doby!', zh:'歡迎你，Doby！'},
+  intro:{en:'This is your study playground for the Grade 5 Final Exam. Pick a subject, read the notes, play the games, and take the quizzes!',
+         zh:'這是你的五年級期末考複習樂園。選一科、讀重點、玩遊戲、做測驗！'},
+  sections:[
+    {heading:{en:'How to use this page', zh:'怎麼使用這個網頁'},
+     blocks:[
+       {type:'list', items:[
+         {en:'Tap the pink 中 button next to any English to see the Chinese.', zh:'點英文旁邊粉紅色的「中」按鈕，就會出現中文。'},
+         {en:'Use the 顯示全部中文 button at the top to show ALL Chinese at once.', zh:'用最上面的「顯示全部中文」按鈕，可以一次顯示所有中文。'},
+         {en:'Read the key notes (重點整理) for each subject.', zh:'讀每一科的重點整理。'},
+         {en:'Play the games to learn vocabulary and ideas.', zh:'玩遊戲來學單字和觀念。'},
+         {en:'Take the quiz at the bottom — it gives you a score and stars!', zh:'做最下面的小測驗 — 會幫你打分數和給星星！'},
+       ]},
+       {type:'tip', en:'Tip: Try the quiz first WITHOUT the Chinese. Then check the Chinese for the words you did not know.',
+        zh:'小撇步：先不要看中文做測驗，做完再點「中」看不會的單字，效果最好！'},
+     ]},
+    {heading:{en:'Exam Subjects', zh:'考試科目'},
+     blocks:[
+       {type:'fact', en:'There are 4 subjects on the Final Exam. Click a card to start!', zh:'期末考有 4 個科目。點卡片開始！'},
+       {type:'subjectcards'},
+     ]},
+    {heading:{en:'Exam Scope at a glance', zh:'考試範圍總覽'},
+     blocks:[
+       {type:'table',
+        cols:[{en:'Subject',zh:'科目'},{en:'What to study',zh:'要讀什麼'}],
+        rows:[
+          [{en:'🔬 Science',zh:'🔬 自然'},{en:'Unit 3: Water distribution, human impact on water, erosion & deposition, floods, glaciers',zh:'第三單元：水的分布、人類對水的影響、侵蝕與沉積、洪水、冰河'}],
+          [{en:'📖 Reading',zh:'📖 閱讀'},{en:'4 stories + concepts (genre, plot, theme, cause & effect) + 32 vocabulary words',zh:'4 篇故事 + 概念（文體、情節、主題、因果）+ 32 個單字'}],
+          [{en:'✍️ Grammar & Writing',zh:'✍️ 文法與寫作'},{en:'Past tenses, past perfect, present perfect, possessives, conditionals + a historical-fiction story',zh:'過去式、過去完成式、現在完成式、所有格、條件句 + 一篇歷史小說'}],
+          [{en:'🔢 Math',zh:'🔢 數學'},{en:'Time, volume & capacity, percentages, surface area, line of symmetry',zh:'時間、體積與容量、百分比、表面積、對稱線'}],
+        ]},
+     ]},
+  ],
+};
+
+/* ============================================================
+   CONTENT — SCIENCE  (Unit 3: Earth's Other Systems)
+   ============================================================ */
+CONTENT.science = {
+  emoji:'🔬',
+  title:{en:'Science — Unit 3: Earth\'s Water Systems', zh:'自然 — 第三單元：地球的水系統'},
+  intro:{en:'The hydrosphere includes ALL the water on Earth. Learn how water is shared, how humans affect it, and how it shapes the land.',
+         zh:'水圈包含地球上「所有」的水。學習水如何分布、人類如何影響水、以及水如何塑造地形。'},
+  sections:[
+    {heading:{en:'Lesson 1 · Water Distribution on Earth', zh:'第一課 · 地球上的水分布'},
+     blocks:[
+       {type:'fact', en:'The hydrosphere includes all the water on Earth.', zh:'水圈包含地球上所有的水。'},
+       {type:'html', html:`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--soft);border-radius:14px;padding:12px;margin:10px 0">
+          <svg viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Earth's water: 97% salt water, 3% freshwater">
+            <circle cx="60" cy="60" r="56" fill="#2a8cff"/>
+            <path d="M60 60 L60 4 A56 56 0 0 1 70.5 5 Z" fill="#34b87a"/>
+            <circle cx="60" cy="60" r="26" fill="#fff"/>
+            <text x="60" y="64" text-anchor="middle" font-size="11" font-weight="700" fill="#2a8cff">H₂O</text>
+          </svg>
+          <div style="font-size:.95rem">
+            <div><b style="color:#2a8cff">■ 97%</b> ${bi('Salt water (oceans)','鹹水（海洋）')}</div>
+            <div><b style="color:#34b87a">■ 3%</b> ${bi('Freshwater','淡水')}</div>
+            <div style="color:var(--muted);margin-top:4px">${bi('Less than 1% is fresh surface water: 87% lakes, 11% swamps, only 2% rivers.','不到 1% 是地表淡水：87% 在湖泊、11% 在沼澤、只有 2% 在河流。')}</div>
+          </div></div>`},
+       {type:'table',
+        cols:[{en:'Type',zh:'種類'},{en:'Description',zh:'說明'}],
+        rows:[
+          [{en:'Salt Water',zh:'鹹水'},{en:'97% of Earth\'s water is salt water in the oceans.',zh:'地球 97% 的水是海洋中的鹹水。'}],
+          [{en:'Freshwater',zh:'淡水'},{en:'3% is freshwater. Most is frozen in glaciers and ice caps; the rest is underground.',zh:'3% 是淡水。大部分凍結在冰河和冰帽中，其餘在地下。'}],
+          [{en:'Fresh Surface Water',zh:'地表淡水'},{en:'Less than 1%. 87% in lakes, 11% in swamps, only 2% in rivers.',zh:'不到 1%。87% 在湖泊、11% 在沼澤、只有 2% 在河流。'}],
+        ]},
+       {type:'note', en:'Groundwater is one of the main sources of freshwater for humans. Water seeps into the soil and enters underground aquifers. An aquifer is an underground layer of rock or soil that stores water. We reach it by drilling a well and pumping the water up.',
+        zh:'地下水是人類主要的淡水來源之一。水滲入土壤、進入地下的「含水層」。含水層是地下儲水的岩石或土壤層。我們鑽井並把水抽上來取用。'},
+       {type:'table',
+        cols:[{en:'Standing Water',zh:'靜止水'},{en:'Running Water',zh:'流動水'}],
+        rows:[
+          [{en:'Any water that is NOT moving. Example: lakes and reservoirs.',zh:'不流動的水。例：湖泊和水庫。'},{en:'Water that is regularly moving. Example: rivers and streams.',zh:'會固定流動的水。例：河流和溪流。'}],
+        ]},
+       {type:'fact', en:'Storage means water kept in one place for later use. A dam is a wall built across a river to hold back water. Dams create a reservoir — a large artificial lake for storing water. Some water is always released so the river keeps flowing.',
+        zh:'「儲存」是指把水留在一個地方以後使用。水壩是橫跨河流、用來擋水的牆。水壩會形成「水庫」——一個人造的大湖來儲水。會固定放掉一些水，讓河流不會斷流。'},
+     ]},
+    {heading:{en:'Lesson 2 · Human Impact on Water Resources', zh:'第二課 · 人類對水資源的影響'},
+     blocks:[
+       {type:'fact', en:'Three kinds of water pollution: Oil Spills, Algal Blooms, and Acid Rain.', zh:'三種水污染：漏油、藻華、酸雨。'},
+       {type:'table',
+        cols:[{en:'Pollution',zh:'污染'},{en:'Cause',zh:'原因'},{en:'Effect',zh:'影響'}],
+        rows:[
+          [{en:'Oil Spill — oil released into water',zh:'漏油 — 油外洩到水中'},{en:'Broken oil rigs or ships spill oil. The largest US spill was the 2010 Gulf of Mexico rig explosion.',zh:'損壞的鑽油平台或船隻漏油。美國史上最大是 2010 年墨西哥灣鑽油平台爆炸。'},{en:'Damages ecosystems, kills wildlife, costly and hard to clean up.',zh:'破壞生態系、殺死野生動物、清理昂貴又困難。'}],
+          [{en:'Algal Bloom — rapid growth of algae',zh:'藻華 — 藻類快速大量繁殖'},{en:'Fertilizer runoff from farms causes toxic algae to grow fast.',zh:'農田的肥料流入水中，使有毒藻類快速生長。'},{en:'Oxygen depletion (decaying algae uses up oxygen) and toxins make water unsafe.',zh:'耗盡氧氣（藻類腐爛耗氧）並釋放毒素，使水變得不安全。'}],
+          [{en:'Acid Rain — rain containing acids',zh:'酸雨 — 含有酸的雨'},{en:'Factories, cars, power plants and volcanoes release gases that mix with water in the air to form acids.',zh:'工廠、汽車、發電廠和火山排放氣體，在空氣中與水結合形成酸。'},{en:'Harms plants and trees, pollutes water, damages soil, kills aquatic life.',zh:'危害植物樹木、污染水、破壞土壤、殺死水生生物。'}],
+        ]},
+       {type:'fact', en:'Conservation means using resources wisely. Remember the three R\'s:', zh:'保育是指聰明地使用資源。記住三個 R：'},
+       {type:'list', items:[
+         {en:'Reduce — use less water (turn off taps, fix leaks, shorter showers, full loads).', zh:'Reduce 減少 — 用更少的水（關水龍頭、修漏水、縮短淋浴、洗衣機裝滿再洗）。'},
+         {en:'Reuse — use the same water again (collect rainwater, reuse cooking water).', zh:'Reuse 重複使用 — 把同樣的水再用一次（收集雨水、重複使用煮菜的水）。'},
+         {en:'Recycle — clean used water at a treatment facility so it can be used again.', zh:'Recycle 回收 — 在淨水廠處理用過的水，讓它能再次使用。'},
+       ]},
+       {type:'note', en:'The 1974 Safe Water Drinking Act is a U.S. law that sets rules for water quality, limits harmful chemicals in public water, and requires regular testing and treatment to protect people\'s health.',
+        zh:'1974 年的《安全飲用水法》是美國法律，制定水質規範、限制公共用水中的有害化學物質、並要求定期檢測與處理以保護民眾健康。'},
+     ]},
+    {heading:{en:'Lesson 3 · Effects on the Hydrosphere', zh:'第三課 · 對水圈的影響'},
+     blocks:[
+       {type:'fact', en:'Water shapes Earth\'s surface through erosion, deposition, floods, and glaciers.', zh:'水透過侵蝕、沉積、洪水和冰河來塑造地球表面。'},
+       {type:'table',
+        cols:[{en:'Erosion',zh:'侵蝕'},{en:'Deposition',zh:'沉積'}],
+        rows:[
+          [{en:'Breaks down and MOVES sediment',zh:'分解並「搬走」沉積物'},{en:'DROPS sediment in a new location',zh:'把沉積物「放下」在新地點'}],
+          [{en:'Removes material',zh:'移除物質'},{en:'Adds material',zh:'增加物質'}],
+          [{en:'Usually fast-moving water',zh:'通常是流速快的水'},{en:'Usually slow-moving water',zh:'通常是流速慢的水'}],
+          [{en:'Wears land away (e.g. riverbank wearing away)',zh:'把陸地磨損掉（例：河岸被沖刷）'},{en:'Builds land up (e.g. sand building up on a beach)',zh:'把陸地堆積起來（例：沙子在海灘上堆積）'}],
+        ]},
+       {type:'fact', en:'Landforms created by DEPOSITION:', zh:'由「沉積」形成的地形：'},
+       {type:'table',
+        cols:[{en:'Landform',zh:'地形'},{en:'How it forms',zh:'如何形成'},{en:'Example',zh:'例子'}],
+        rows:[
+          [{en:'Delta',zh:'三角洲'},{en:'A river slows down as it enters a lake or ocean (triangle/fan shape in water).',zh:'河流進入湖或海時變慢（水中的三角形/扇形）。'},{en:'Nile Delta',zh:'尼羅河三角洲'}],
+          [{en:'Alluvial Fan',zh:'沖積扇'},{en:'A river leaves a steep narrow canyon and stops flowing (fan shape on land).',zh:'河流離開陡峭狹窄的峽谷後停止流動（陸地上的扇形）。'},{en:'Hualien Alluvial Fans',zh:'花蓮沖積扇'}],
+          [{en:'Floodplain',zh:'氾濫平原'},{en:'Floodwater deposits sediment beside a river (flat land beside river).',zh:'洪水把沉積物堆在河流旁邊（河邊的平坦土地）。'},{en:'Many farming areas',zh:'許多農業區'}],
+        ]},
+       {type:'table',
+        cols:[{en:'Term',zh:'名詞'},{en:'Definition',zh:'定義'},{en:'Effect',zh:'影響'}],
+        rows:[
+          [{en:'Flood',zh:'洪水'},{en:'Water covering land that is normally dry (heavy rain or overflowing rivers).',zh:'淹沒平常乾燥土地的水（大雨或河流溢出）。'},{en:'Property damage',zh:'財產損失'}],
+          [{en:'Hurricane',zh:'颶風'},{en:'A large tropical storm formed over warm ocean water.',zh:'在溫暖海面形成的大型熱帶風暴。'},{en:'Strong winds and rain',zh:'強風和大雨'}],
+          [{en:'Storm Surge',zh:'風暴潮'},{en:'Ocean water pushed onto land by hurricane winds.',zh:'被颶風吹上陸地的海水。'},{en:'Coastal flooding',zh:'沿海淹水'}],
+          [{en:'Wetland',zh:'濕地'},{en:'Land that stays wet — natural water storage.',zh:'保持潮濕的土地——天然的儲水區。'},{en:'Reduces flooding',zh:'減少淹水'}],
+        ]},
+       {type:'list', items:[
+         {en:'Positive effects of floods: add fertile soil, help plants grow, bring nutrients.', zh:'洪水的「好處」：增加肥沃的土壤、幫助植物生長、帶來養分。'},
+         {en:'Negative effects of floods: damage homes, damage roads, move mud and debris.', zh:'洪水的「壞處」：破壞房屋、破壞道路、沖走泥巴和雜物。'},
+       ]},
+       {type:'fact', en:'How a glacier changes land: erosion (scrapes and removes rock), transportation (carries rock and sediment), deposition (drops sediment as it melts).',
+        zh:'冰河如何改變地形：侵蝕（刮除岩石）、搬運（攜帶岩石和沉積物）、沉積（融化時放下沉積物）。'},
+       {type:'list', items:[
+         {en:'Glacial debris — rocks left behind by a glacier.', zh:'冰磧碎屑 — 冰河留下的岩石。'},
+         {en:'Terminus — the end of the glacier.', zh:'冰舌末端 — 冰河的尾端。'},
+         {en:'Moraine — a ridge or mound of rocks left by a glacier.', zh:'冰磧 — 冰河留下的岩石稜或土堆。'},
+       ]},
+     ]},
+  ],
+  vocab:[
+    {term:'glacier', en:'A large sheet of ice that moves slowly across the land.', zh:'冰河：一大片在陸地上緩慢移動的冰。'},
+    {term:'groundwater', en:'Water stored in the cracks and spaces in soil and underground rocks.', zh:'地下水：儲存在土壤與地下岩石縫隙中的水。'},
+    {term:'ice caps', en:'A covering of ice over a large area, such as in the polar regions.', zh:'冰帽：覆蓋大片區域的冰，例如極地。'},
+    {term:'reservoir', en:'An artificial lake built for storing water.', zh:'水庫：人造的儲水湖。'},
+    {term:'aquifer', en:'An underground layer of rock or soil that stores water.', zh:'含水層：地下儲水的岩石或土壤層。'},
+    {term:'algal bloom', en:'A sometimes harmful rapid increase of algae in water.', zh:'藻華：水中藻類快速增加（有時有害）。'},
+    {term:'acid rain', en:'Harmful rain caused by burning fossil fuels.', zh:'酸雨：燃燒化石燃料造成的有害雨水。'},
+    {term:'conservation', en:'Saving, protecting, or using resources wisely.', zh:'保育：節約、保護或聰明使用資源。'},
+    {term:'natural resources', en:'Matter that occurs in nature and is useful to humans.', zh:'天然資源：自然界中對人類有用的物質。'},
+    {term:'ecosystem', en:'A community of interacting organisms and their environment.', zh:'生態系：互相作用的生物群與牠們的環境。'},
+    {term:'erosion', en:'The process of weathered rock moving from one place to another.', zh:'侵蝕：風化的岩石從一處移動到另一處的過程。'},
+    {term:'deposition', en:'The dropping off of eroded soil and bits of rock.', zh:'沉積：被侵蝕的土壤和碎石被放下堆積。'},
+    {term:'floodplain', en:'Land near a body of water that is likely to flood.', zh:'氾濫平原：靠近水域、容易淹水的土地。'},
+    {term:'moraine', en:'A ridge or mound of rocks left by a glacier.', zh:'冰磧：冰河留下的岩石稜或土堆。'},
+  ],
+  match:{
+    title:{en:'Match the word to its Chinese meaning', zh:'單字配對：英文 ↔ 中文'},
+    pairs:[
+      {l:'glacier', r:'冰河'},
+      {l:'groundwater', r:'地下水'},
+      {l:'reservoir', r:'水庫'},
+      {l:'aquifer', r:'含水層'},
+      {l:'acid rain', r:'酸雨'},
+      {l:'algal bloom', r:'藻華'},
+      {l:'ecosystem', r:'生態系'},
+      {l:'erosion', r:'侵蝕'},
+      {l:'deposition', r:'沉積'},
+      {l:'floodplain', r:'氾濫平原'},
+    ],
+  },
+  sorts:[
+    {title:{en:'Sort: Erosion vs Deposition', zh:'分類遊戲：侵蝕 vs 沉積'},
+     buckets:[{en:'Erosion 侵蝕',zh:'侵蝕'},{en:'Deposition 沉積',zh:'沉積'}],
+     items:[
+       {en:'Breaks down and moves sediment', zh:'分解並搬走沉積物', b:0},
+       {en:'Removes material', zh:'移除物質', b:0},
+       {en:'Usually fast-moving water', zh:'通常流速快', b:0},
+       {en:'Riverbank wearing away', zh:'河岸被沖刷', b:0},
+       {en:'Wears land away', zh:'磨損陸地', b:0},
+       {en:'Drops sediment in a new place', zh:'在新地點放下沉積物', b:1},
+       {en:'Adds material', zh:'增加物質', b:1},
+       {en:'Usually slow-moving water', zh:'通常流速慢', b:1},
+       {en:'Sand building up on a beach', zh:'沙子在海灘堆積', b:1},
+       {en:'Builds land up', zh:'堆高陸地', b:1},
+     ]},
+  ],
+  quiz:[
+    {q:{en:'What percent of Earth\'s water is salt water?',zh:'地球上有百分之幾的水是鹹水？'},
+     options:[{en:'3%',zh:'3%'},{en:'50%',zh:'50%'},{en:'97%',zh:'97%'},{en:'1%',zh:'1%'}], a:2,
+     explain:{en:'97% is salt water in the oceans; only 3% is freshwater.',zh:'97% 是海洋的鹹水，只有 3% 是淡水。'}},
+    {q:{en:'Where is MOST of Earth\'s freshwater found?',zh:'地球大部分的淡水在哪裡？'},
+     options:[{en:'In rivers',zh:'河流'},{en:'Frozen in glaciers and ice caps',zh:'凍結在冰河和冰帽'},{en:'In the oceans',zh:'海洋'},{en:'In clouds',zh:'雲裡'}], a:1,
+     explain:{en:'Most freshwater is frozen in glaciers and ice caps.',zh:'大部分淡水凍結在冰河和冰帽中。'}},
+    {q:{en:'What is an aquifer?',zh:'什麼是含水層？'},
+     options:[{en:'A river that flows fast',zh:'流速快的河'},{en:'A wall across a river',zh:'橫跨河流的牆'},{en:'An underground layer of rock or soil that stores water',zh:'地下儲水的岩石或土壤層'},{en:'A type of cloud',zh:'一種雲'}], a:2,
+     explain:{en:'An aquifer stores groundwater underground.',zh:'含水層在地下儲存地下水。'}},
+    {q:{en:'Which is an example of STANDING water?',zh:'下列哪個是「靜止水」的例子？'},
+     options:[{en:'A river',zh:'河流'},{en:'A stream',zh:'溪流'},{en:'A lake',zh:'湖泊'},{en:'A waterfall',zh:'瀑布'}], a:2,
+     explain:{en:'Standing water does not move — like a lake or reservoir.',zh:'靜止水不流動，例如湖泊或水庫。'}},
+    {q:{en:'Why is a dam built across a river?',zh:'為什麼要在河上建水壩？'},
+     options:[{en:'To hold back water and create a reservoir',zh:'擋住水並形成水庫'},{en:'To make the river dry',zh:'讓河流乾掉'},{en:'To cause floods',zh:'製造洪水'},{en:'To make salt water',zh:'製造鹹水'}], a:0,
+     explain:{en:'Dams hold back water to create reservoirs for storage.',zh:'水壩擋水以形成水庫來儲水。'}},
+    {q:{en:'Which is NOT one of the three R\'s of conservation?',zh:'下列哪個「不是」保育的三個 R？'},
+     options:[{en:'Reduce',zh:'減少'},{en:'Reuse',zh:'重複使用'},{en:'Remove',zh:'移除'},{en:'Recycle',zh:'回收'}], a:2,
+     explain:{en:'The three R\'s are Reduce, Reuse, Recycle.',zh:'三個 R 是 Reduce、Reuse、Recycle。'}},
+    {q:{en:'What causes acid rain?',zh:'酸雨是什麼造成的？'},
+     options:[{en:'Too many fish',zh:'太多魚'},{en:'Gases from factories, cars and volcanoes mixing with water in the air',zh:'工廠、汽車、火山的氣體在空氣中與水結合'},{en:'Drinking too much water',zh:'喝太多水'},{en:'Glaciers melting',zh:'冰河融化'}], a:1,
+     explain:{en:'Polluting gases mix with water in the atmosphere to form acids.',zh:'污染氣體在大氣中與水結合形成酸。'}},
+    {q:{en:'What is one effect of an algal bloom?',zh:'藻華會造成什麼影響？'},
+     options:[{en:'More oxygen for fish',zh:'魚有更多氧氣'},{en:'Oxygen depletion that harms aquatic life',zh:'耗盡氧氣，危害水生生物'},{en:'Cleaner water',zh:'更乾淨的水'},{en:'Less pollution',zh:'更少污染'}], a:1,
+     explain:{en:'Decaying algae uses up oxygen and releases toxins.',zh:'腐爛的藻類耗氧並釋放毒素。'}},
+    {q:{en:'Erosion usually happens in…',zh:'侵蝕通常發生在……'},
+     options:[{en:'fast-moving water',zh:'流速快的水'},{en:'slow-moving water',zh:'流速慢的水'},{en:'still air',zh:'靜止的空氣'},{en:'dry sand only',zh:'只有乾沙'}], a:0,
+     explain:{en:'Fast water wears away and moves material (erosion).',zh:'快速的水把物質磨損並搬走（侵蝕）。'}},
+    {q:{en:'How does a delta form?',zh:'三角洲怎麼形成的？'},
+     options:[{en:'A glacier scrapes rock',zh:'冰河刮除岩石'},{en:'A river slows down entering a lake or ocean and drops sediment',zh:'河流進入湖或海時變慢、放下沉積物'},{en:'A volcano erupts',zh:'火山爆發'},{en:'Acid rain falls',zh:'下酸雨'}], a:1,
+     explain:{en:'Deltas form by deposition where a river meets a lake/ocean.',zh:'三角洲在河流注入湖或海的地方因沉積形成。'}},
+    {q:{en:'What is a moraine?',zh:'什麼是冰磧 (moraine)？'},
+     options:[{en:'A ridge or mound of rocks left by a glacier',zh:'冰河留下的岩石稜或土堆'},{en:'A type of ocean fish',zh:'一種海魚'},{en:'A fast river',zh:'湍急的河'},{en:'A rain cloud',zh:'雨雲'}], a:0,
+     explain:{en:'A moraine is rocks deposited by a glacier.',zh:'冰磧是冰河堆積的岩石。'}},
+    {q:{en:'Which is a POSITIVE effect of floods?',zh:'洪水的「好處」是什麼？'},
+     options:[{en:'They damage homes',zh:'破壞房屋'},{en:'They add fertile soil and bring nutrients',zh:'增加肥沃土壤、帶來養分'},{en:'They move mud and debris',zh:'沖走泥巴雜物'},{en:'They damage roads',zh:'破壞道路'}], a:1,
+     explain:{en:'Floods can add fertile soil that helps plants grow.',zh:'洪水能帶來肥沃土壤，幫助植物生長。'}},
+  ],
+};
+</script>
+<script>
+/* ============================================================
+   CONTENT — READING
+   ============================================================ */
+CONTENT.reading = {
+  emoji:'📖',
+  title:{en:'Reading — Stories, Concepts & Vocabulary', zh:'閱讀 — 故事、概念與單字'},
+  intro:{en:'You will read 4 main texts and answer questions about reading skills like genre, plot, theme and cause & effect.',
+         zh:'你會讀 4 篇主要文章，並回答關於閱讀技巧的題目，例如文體、情節、主題、因果關係。'},
+  sections:[
+    {heading:{en:'The 4 Main Texts', zh:'四篇主要文章'},
+     blocks:[
+       {type:'table',
+        cols:[{en:'Text',zh:'文章'},{en:'Genre',zh:'文體'},{en:'What it is about',zh:'內容大意'}],
+        rows:[
+          [{en:'Bud, Not Buddy',zh:'《巴德，不是巴弟》'},{en:'Historical Fiction',zh:'歷史小說'},{en:'During the Great Depression (1930s), a 10-year-old orphan named Bud runs away to find the man he believes is his father, a jazz band leader.',zh:'經濟大蕭條時期（1930 年代），一個叫 Bud 的 10 歲孤兒逃跑去尋找他相信是父親的人——一位爵士樂團團長。'}],
+          [{en:'The Case of the Missing Bees',zh:'《消失的蜜蜂之謎》'},{en:'Argumentative / Expository',zh:'論說文／說明文'},{en:'Explains why bee populations are declining, why bees are important (pollination & farming), and what we can do.',zh:'說明蜜蜂數量為何減少、蜜蜂為何重要（授粉與農業）、以及我們能做什麼。'}],
+          [{en:'The Unbreakable Code',zh:'《破解不了的密碼》'},{en:'Historical Fiction',zh:'歷史小說'},{en:'About the Navajo Code Talkers in World War II, who used the Navajo language to make a secret code the enemy could not break.',zh:'關於二戰中的納瓦霍密碼員，他們用納瓦霍語做出敵人破解不了的密碼。'}],
+          [{en:'Survival at 40 Below',zh:'《零下 40 度的生存》'},{en:'Expository',zh:'說明文'},{en:'Explains how Arctic animals survive extreme cold using adaptations like thick fur, hibernation, and storing food.',zh:'說明北極動物如何用適應方式（厚毛、冬眠、儲存食物）在極寒中生存。'}],
+        ]},
+     ]},
+    {heading:{en:'Reading Concepts (Key Skills)', zh:'閱讀概念（重點技巧）'},
+     blocks:[
+       {type:'list', items:[
+         {en:'Idiom — a phrase whose meaning is different from the actual words. Example: "It\'s raining cats and dogs" means it is raining very hard.', zh:'慣用語 — 意思和字面不同的片語。例：「raining cats and dogs」是指下大雨。'},
+         {en:'Historical Fiction — a made-up story set in a real time in the past.', zh:'歷史小說 — 設定在真實過去時代的虛構故事。'},
+         {en:'Characterization — how an author shows what a character is like, through their words, actions and thoughts.', zh:'人物刻畫 — 作者透過角色的話語、行動和想法來呈現他是怎樣的人。'},
+         {en:'Plot: Conflict — the main problem or struggle the character faces in the story.', zh:'情節：衝突 — 角色在故事中面對的主要問題或掙扎。'},
+         {en:'Argumentative Text — writing that gives an opinion and reasons to convince the reader.', zh:'論說文 — 提出意見和理由來說服讀者的文章。'},
+         {en:'Charts and Headings — text features that organize information and help you find it quickly.', zh:'圖表與標題 — 整理資訊、幫你快速找到內容的文章特徵。'},
+         {en:'Author\'s Perspective — the author\'s attitude or opinion about a topic.', zh:'作者觀點 — 作者對某個主題的態度或意見。'},
+         {en:'Flashback — a scene that jumps back to an earlier time to explain something.', zh:'倒敘 — 跳回較早時間的片段，用來說明某件事。'},
+         {en:'Theme — the big message or lesson of a story.', zh:'主題 — 故事的核心訊息或道理。'},
+         {en:'Expository Text — writing that explains a topic or gives facts.', zh:'說明文 — 解釋主題或提供事實的文章。'},
+         {en:'Cause and Effect — the reason something happens (cause) and what happens because of it (effect).', zh:'因果關係 — 某事發生的原因（cause）以及因此產生的結果（effect）。'},
+         {en:'Similarities and Differences — how two things are alike and how they are different (compare and contrast).', zh:'異同 — 兩件事物相同和不同的地方（比較與對照）。'},
+       ]},
+     ]},
+  ],
+  vocab:[
+    {term:'assume', en:'To think something is true without proof.', zh:'假設、以為：沒有證據就認為某事是真的。'},
+    {term:'guarantee', en:'To promise something for sure.', zh:'保證：肯定地承諾某件事。'},
+    {term:'nominate', en:'To suggest someone for a job or prize.', zh:'提名：推薦某人擔任職務或獲獎。'},
+    {term:'obviously', en:'In a way that is very easy to see; clearly.', zh:'顯然地：很容易看出來、明顯地。'},
+    {term:'rely', en:'To depend on or trust someone or something.', zh:'依賴、依靠：依靠或信任某人某物。'},
+    {term:'supportive', en:'Giving help and encouragement.', zh:'支持的：給予幫助與鼓勵。'},
+    {term:'sympathy', en:'A feeling of care for someone who is sad or hurt.', zh:'同情、體諒：對難過或受傷的人的關懷。'},
+    {term:'weakling', en:'A person who is not strong.', zh:'軟弱的人、體弱者。'},
+    {term:'agricultural', en:'Having to do with farming.', zh:'農業的：與耕種有關的。'},
+    {term:'declined', en:'Became less or fewer.', zh:'減少、下降：變得更少。'},
+    {term:'disorder', en:'A problem that stops something working normally.', zh:'失調、紊亂：使某物無法正常運作的問題。'},
+    {term:'identify', en:'To recognize or name something.', zh:'辨識、識別：認出或說出某物。'},
+    {term:'probable', en:'Likely to happen or be true.', zh:'很可能的：有可能發生或為真。'},
+    {term:'thrive', en:'To grow well and be healthy.', zh:'茁壯、興旺：長得好、很健康。'},
+    {term:'unexpected', en:'Surprising; not planned.', zh:'意外的、出乎意料的。'},
+    {term:'widespread', en:'Found over a large area.', zh:'廣泛的、普遍的：分布在很大的範圍。'},
+    {term:'bulletin', en:'A short news report or official notice.', zh:'公告、簡報：簡短的新聞或官方通知。'},
+    {term:'contributions', en:'Things you give to help.', zh:'貢獻：為了幫助而付出的東西。'},
+    {term:'diversity', en:'Having many different kinds.', zh:'多樣性：有許多不同的種類。'},
+    {term:'enlisted', en:'Joined the military.', zh:'入伍：加入軍隊。'},
+    {term:'intercept', en:'To stop or catch something on the way.', zh:'攔截：在中途擋下或抓住某物。'},
+    {term:'operations', en:'Planned actions, especially military ones.', zh:'行動：有計畫的（尤指軍事）行動。'},
+    {term:'recruits', en:'New members, especially of the army.', zh:'新兵、新成員。'},
+    {term:'survival', en:'The state of staying alive.', zh:'生存、存活。'},
+    {term:'adaptation', en:'A body feature or behavior that helps an animal survive.', zh:'適應（特徵）：幫助動物生存的身體特徵或行為。'},
+    {term:'agile', en:'Able to move quickly and easily.', zh:'敏捷的：能快速又輕鬆地移動。'},
+    {term:'cache', en:'A hidden store of food or supplies.', zh:'儲藏、藏匿處：藏起來的食物或補給。'},
+    {term:'dormant', en:'Not active; resting.', zh:'休眠的：不活動、在休息。'},
+    {term:'forage', en:'To search for food.', zh:'覓食：尋找食物。'},
+    {term:'frigid', en:'Very cold.', zh:'嚴寒的、極冷的。'},
+    {term:'hibernate', en:'To sleep through the winter.', zh:'冬眠：整個冬天都在睡。'},
+    {term:'insulates', en:'Keeps heat in and protects from the cold.', zh:'隔熱、保溫：把熱留住、抵抗寒冷。'},
+  ],
+  match:{
+    title:{en:'Vocabulary Match', zh:'單字配對：英文 ↔ 中文'},
+    pairs:[
+      {l:'assume', r:'以為'},
+      {l:'rely', r:'依靠'},
+      {l:'thrive', r:'茁壯'},
+      {l:'declined', r:'減少'},
+      {l:'identify', r:'辨識'},
+      {l:'frigid', r:'極冷的'},
+      {l:'hibernate', r:'冬眠'},
+      {l:'forage', r:'覓食'},
+      {l:'survival', r:'生存'},
+      {l:'diversity', r:'多樣性'},
+      {l:'intercept', r:'攔截'},
+      {l:'widespread', r:'普遍的'},
+    ],
+  },
+  quiz:[
+    {q:{en:'"Bud, Not Buddy" is which genre?',zh:'《Bud, Not Buddy》是哪一種文體？'},
+     options:[{en:'Expository text',zh:'說明文'},{en:'Historical fiction',zh:'歷史小說'},{en:'Poetry',zh:'詩'},{en:'Argumentative text',zh:'論說文'}], a:1,
+     explain:{en:'It is a made-up story set in the real past (Great Depression).',zh:'它是設定在真實過去（經濟大蕭條）的虛構故事。'}},
+    {q:{en:'A flashback is…',zh:'倒敘 (flashback) 是……'},
+     options:[{en:'a scene that jumps back to an earlier time',zh:'跳回較早時間的片段'},{en:'the end of the story',zh:'故事的結尾'},{en:'a list of facts',zh:'一串事實'},{en:'a kind of map',zh:'一種地圖'}], a:0,
+     explain:{en:'A flashback shows something that happened earlier.',zh:'倒敘呈現之前發生的事。'}},
+    {q:{en:'In "The Unbreakable Code," the Navajo Code Talkers used their language to…',zh:'在《The Unbreakable Code》中，納瓦霍密碼員用他們的語言來……'},
+     options:[{en:'write songs',zh:'寫歌'},{en:'make a secret code the enemy could not break',zh:'做出敵人破解不了的密碼'},{en:'teach school',zh:'教書'},{en:'sell goods',zh:'賣東西'}], a:1,
+     explain:{en:'Their language became an unbreakable WWII code.',zh:'他們的語言成了二戰無法破解的密碼。'}},
+    {q:{en:'The idiom "It\'s raining cats and dogs" means…',zh:'慣用語「It\'s raining cats and dogs」是指……'},
+     options:[{en:'animals are falling',zh:'動物在掉下來'},{en:'it is raining very hard',zh:'雨下得很大'},{en:'it is sunny',zh:'天氣晴朗'},{en:'pets are outside',zh:'寵物在外面'}], a:1,
+     explain:{en:'An idiom\'s meaning is different from the actual words.',zh:'慣用語的意思和字面不同。'}},
+    {q:{en:'The THEME of a story is…',zh:'故事的「主題」是……'},
+     options:[{en:'the big message or lesson',zh:'核心訊息或道理'},{en:'the main character\'s name',zh:'主角的名字'},{en:'the setting',zh:'場景'},{en:'the title',zh:'標題'}], a:0,
+     explain:{en:'Theme is the lesson or message the author wants to share.',zh:'主題是作者想傳達的道理或訊息。'}},
+    {q:{en:'"The Case of the Missing Bees" is mainly which kind of text?',zh:'《The Case of the Missing Bees》主要是哪一種文章？'},
+     options:[{en:'A fairy tale',zh:'童話'},{en:'Argumentative / expository about declining bees',zh:'關於蜜蜂減少的論說／說明文'},{en:'A poem',zh:'詩'},{en:'A diary',zh:'日記'}], a:1,
+     explain:{en:'It explains and argues about why bees are disappearing.',zh:'它在說明並論證蜜蜂為何消失。'}},
+    {q:{en:'Author\'s perspective means…',zh:'作者觀點 (Author\'s perspective) 是指……'},
+     options:[{en:'the number of pages',zh:'頁數'},{en:'the author\'s attitude or opinion about a topic',zh:'作者對主題的態度或意見'},{en:'the cover picture',zh:'封面圖'},{en:'the reader\'s age',zh:'讀者的年齡'}], a:1,
+     explain:{en:'It is how the author feels or thinks about the topic.',zh:'就是作者對該主題的感受或想法。'}},
+    {q:{en:'Choose the meaning of "thrive".',zh:'選出「thrive」的意思。'},
+     options:[{en:'to grow well and be healthy',zh:'長得好、很健康'},{en:'to fall down',zh:'跌倒'},{en:'to be very cold',zh:'很冷'},{en:'to forget',zh:'忘記'}], a:0,
+     explain:{en:'thrive = grow well and be healthy (茁壯).',zh:'thrive = 茁壯、興旺。'}},
+    {q:{en:'Choose the meaning of "frigid".',zh:'選出「frigid」的意思。'},
+     options:[{en:'very warm',zh:'很溫暖'},{en:'very cold',zh:'很冷'},{en:'very fast',zh:'很快'},{en:'very big',zh:'很大'}], a:1,
+     explain:{en:'frigid = very cold (嚴寒的).',zh:'frigid = 極冷的、嚴寒的。'}},
+    {q:{en:'If you "rely on" your friend, you…',zh:'如果你「rely on」你的朋友，代表你……'},
+     options:[{en:'depend on and trust them',zh:'依靠並信任他們'},{en:'ignore them',zh:'忽視他們'},{en:'race against them',zh:'跟他們比賽'},{en:'forget them',zh:'忘記他們'}], a:0,
+     explain:{en:'rely = depend on / trust (依靠).',zh:'rely = 依靠、信任。'}},
+    {q:{en:'"Survival at 40 Below" is which genre?',zh:'《Survival at 40 Below》是哪一種文體？'},
+     options:[{en:'Historical fiction',zh:'歷史小說'},{en:'Expository text',zh:'說明文'},{en:'Mystery',zh:'推理小說'},{en:'Fable',zh:'寓言'}], a:1,
+     explain:{en:'It explains real facts about how animals survive the cold.',zh:'它說明動物如何在寒冷中生存的真實事實。'}},
+    {q:{en:'Cause and effect: "Bees are disappearing, SO fewer crops get pollinated." The EFFECT is…',zh:'因果：「蜜蜂消失，所以更少作物被授粉。」這裡的「結果(effect)」是……'},
+     options:[{en:'bees are disappearing',zh:'蜜蜂消失'},{en:'fewer crops get pollinated',zh:'更少作物被授粉'},{en:'bees make honey',zh:'蜜蜂做蜂蜜'},{en:'it rains',zh:'下雨'}], a:1,
+     explain:{en:'The cause is bees disappearing; the effect is fewer crops pollinated.',zh:'原因是蜜蜂消失，結果是更少作物被授粉。'}},
+  ],
+};
+</script>
+<script>
+/* ============================================================
+   CONTENT — GRAMMAR & WRITING
+   ============================================================ */
+CONTENT.grammar = {
+  emoji:'✍️',
+  title:{en:'Grammar & Writing', zh:'文法與寫作'},
+  intro:{en:'Review the key grammar topics, then learn how to write a historical-fiction narrative.',
+         zh:'複習重點文法，然後學習如何寫一篇歷史小說。'},
+  sections:[
+    {heading:{en:'1 · Sequence Adverbs & First Conditional', zh:'1 · 順序副詞與第一條件句'},
+     blocks:[
+       {type:'fact', en:'Sequence adverbs tell the ORDER of events: first, next, then, after that, finally.', zh:'順序副詞表示事情的「順序」：first（首先）、next（接著）、then（然後）、after that（之後）、finally（最後）。'},
+       {type:'example', en:'First, mix the flour. Next, add the eggs. Finally, bake the cake.', zh:'首先，混合麵粉。接著，加入雞蛋。最後，烤蛋糕。'},
+       {type:'fact', en:'First Conditional talks about a REAL future possibility. Form: If + present simple, ... will + base verb.', zh:'第一條件句談「真實的未來可能性」。句型：If + 現在簡單式，... will + 原形動詞。'},
+       {type:'example', en:'If it rains, we will stay home. If you study, you will pass the test.', zh:'如果下雨，我們就會待在家。如果你讀書，你就會通過考試。'},
+     ]},
+    {heading:{en:'2 · Possessives & Possessive Pronouns', zh:'2 · 所有格與所有格代名詞'},
+     blocks:[
+       {type:'fact', en:'Possessive nouns show ownership. Add \'s to a singular noun, and just \' to a plural noun ending in s.', zh:'所有格名詞表示「擁有」。單數加 \'s，字尾是 s 的複數只加 \'。'},
+       {type:'example', en:'The dog\'s bone (one dog). The girls\' room (more than one girl). The children\'s toys (irregular plural → \'s).', zh:'the dog\'s bone（一隻狗）。the girls\' room（多個女孩）。the children\'s toys（不規則複數 → \'s）。'},
+       {type:'table',
+        cols:[{en:'Possessive adjective (before a noun)',zh:'所有格形容詞（放名詞前）'},{en:'Possessive pronoun (stands alone)',zh:'所有格代名詞（單獨使用）'}],
+        rows:[
+          [{en:'my, your, his, her, its, our, their',zh:'my, your, his, her, its, our, their'},{en:'mine, yours, his, hers, ours, theirs',zh:'mine, yours, his, hers, ours, theirs'}],
+          [{en:'This is my book.',zh:'這是我的書。'},{en:'This book is mine.',zh:'這本書是我的。'}],
+        ]},
+     ]},
+    {heading:{en:'3 · Simple Past & Past Continuous', zh:'3 · 過去簡單式與過去進行式'},
+     blocks:[
+       {type:'fact', en:'Simple Past = a finished action in the past. Add -ed, or use the irregular form.', zh:'過去簡單式 = 過去已完成的動作。加 -ed，或用不規則變化。'},
+       {type:'example', en:'I played soccer. She went home. They ate dinner.', zh:'我踢了足球。她回家了。他們吃了晚餐。'},
+       {type:'fact', en:'Past Continuous = was/were + verb-ing = an action in progress in the past.', zh:'過去進行式 = was/were + 動詞-ing = 過去正在進行的動作。'},
+       {type:'tip', en:'They often work together: a long action (past continuous) is interrupted by a short action (simple past). "I was sleeping when the phone rang."',
+        zh:'它們常一起出現：較長的動作（過去進行式）被較短的動作（過去簡單式）打斷。「我正在睡覺時，電話響了。」'},
+     ]},
+    {heading:{en:'4 · Past Perfect', zh:'4 · 過去完成式'},
+     blocks:[
+       {type:'fact', en:'Past Perfect = had + past participle (V3). It shows the EARLIER of two past actions — the one that happened first.', zh:'過去完成式 = had + 過去分詞 (V3)。用來表示兩個過去動作中「先發生」的那一個。'},
+       {type:'example', en:'By the time we arrived, the movie had already started. (The movie started FIRST, then we arrived.)', zh:'等我們到的時候，電影已經開始了。（電影「先」開始，然後我們才到。）'},
+       {type:'tip', en:'Past perfect = the "past of the past". Think: which action happened first? That one uses had + V3.',
+        zh:'過去完成式 = 「過去的過去」。想一想：哪個動作先發生？那個就用 had + V3。'},
+     ]},
+    {heading:{en:'5 · Present Perfect, Superlatives & Participles', zh:'5 · 現在完成式、最高級與分詞'},
+     blocks:[
+       {type:'fact', en:'Present Perfect = have/has + past participle (V3). It links the past to NOW — experiences or recent actions.', zh:'現在完成式 = have/has + 過去分詞 (V3)。把過去和「現在」連起來——經驗或剛完成的動作。'},
+       {type:'example', en:'I have finished my homework. She has visited Japan twice.', zh:'我已經寫完功課了。她去過日本兩次。'},
+       {type:'fact', en:'Superlative adjectives compare 3 or more things: add -est, or use "the most". Always use "the".', zh:'最高級形容詞用來比較三個以上的東西：加 -est，或用 the most。前面一定加 the。'},
+       {type:'example', en:'the tallest building, the most beautiful flower, the biggest dog.', zh:'最高的建築、最美的花、最大的狗。'},
+       {type:'fact', en:'Participles can act like adjectives. -ing describes the thing causing the feeling; -ed/V3 describes the person feeling it.', zh:'分詞可以當形容詞。-ing 描述「引起感覺」的事物；-ed/V3 描述「感覺到」的人。'},
+       {type:'example', en:'The movie was boring. → The bored students fell asleep. (broken glass = glass that is broken)', zh:'這部電影很無聊 (boring)。→ 無聊的 (bored) 學生睡著了。(broken glass = 破掉的玻璃)'},
+     ]},
+    {heading:{en:'✏️ Writing: Historical Fiction Narrative', zh:'✏️ 寫作：歷史小說敘事'},
+     blocks:[
+       {type:'note', en:'Write 150+ words, 4+ paragraphs, in FIRST-PERSON ("I"). Include both optimistic and pessimistic language.',
+        zh:'寫 150 字以上、4 段以上、用「第一人稱(I)」。要同時包含樂觀和悲觀的語氣。'},
+       {type:'list', items:[
+         {en:'Paragraph 1 — Introduce the Main Character and the historical setting where a big change happened (e.g. a disaster).', zh:'第一段 — 介紹主角，以及發生重大改變的歷史背景（例如一場災難）。'},
+         {en:'Paragraph 2 — Outline the daily life of the main character. Show how life changed because of recent events.', zh:'第二段 — 描述主角的日常生活，呈現生活因近期事件而有什麼改變。'},
+         {en:'Paragraph 3 — Have the main character interact with another character.', zh:'第三段 — 讓主角與另一個角色互動。'},
+         {en:'Paragraph 4 — The narrator reflects on their life, with some optimistic thoughts about the future.', zh:'第四段 — 敘述者回顧自己的人生，並對未來有一些樂觀的想法。'},
+       ]},
+       {type:'tip', en:'Optimistic words: hope, brighter, believe, someday. Pessimistic words: afraid, lost, worried, never. Use both!',
+        zh:'樂觀詞：hope（希望）、brighter（更光明）、believe（相信）、someday（總有一天）。悲觀詞：afraid（害怕）、lost（失去）、worried（擔心）、never（永不）。兩種都要用！'},
+     ]},
+  ],
+  mathSets:[
+    {title:{en:'Grammar Speed Practice (type the answer)', zh:'文法速練（輸入答案）'},
+     questions:[
+       {q:{en:'Simple past of "run"?',zh:'run 的過去式？'}, ans:'ran'},
+       {q:{en:'Past participle (V3) of "eat"?',zh:'eat 的過去分詞 (V3)？'}, ans:'eaten'},
+       {q:{en:'Past participle (V3) of "write"?',zh:'write 的過去分詞 (V3)？'}, ans:'written'},
+       {q:{en:'Present perfect: "She has ____ (finish) her work."',zh:'現在完成式：She has ____ (finish) her work.'}, ans:'finished'},
+       {q:{en:'Superlative of "big"?',zh:'big 的最高級？'}, ans:'biggest', accept:['the biggest']},
+       {q:{en:'Superlative of "good"?',zh:'good 的最高級？'}, ans:'best', accept:['the best']},
+       {q:{en:'Possessive pronoun meaning "belonging to me"?',zh:'表示「屬於我」的所有格代名詞？'}, ans:'mine'},
+       {q:{en:'Possessive pronoun meaning "belonging to them"?',zh:'表示「屬於他們」的所有格代名詞？'}, ans:'theirs'},
+     ]},
+  ],
+  quiz:[
+    {q:{en:'Choose the Past Continuous: "While I ____ TV, the lights went out."',zh:'選出過去進行式：「While I ____ TV, the lights went out.」'},
+     options:[{en:'watch',zh:'watch'},{en:'was watching',zh:'was watching'},{en:'have watched',zh:'have watched'},{en:'will watch',zh:'will watch'}], a:1,
+     explain:{en:'Past continuous = was/were + verb-ing.',zh:'過去進行式 = was/were + 動詞-ing。'}},
+    {q:{en:'First conditional: "If it rains, we ____ inside."',zh:'第一條件句：「If it rains, we ____ inside.」'},
+     options:[{en:'stayed',zh:'stayed'},{en:'will stay',zh:'will stay'},{en:'had stayed',zh:'had stayed'},{en:'staying',zh:'staying'}], a:1,
+     explain:{en:'If + present, ... will + base verb.',zh:'If + 現在式，... will + 原形動詞。'}},
+    {q:{en:'"This pencil is ____." (it belongs to me)',zh:'「This pencil is ____.」（這枝鉛筆是我的）'},
+     options:[{en:'my',zh:'my'},{en:'mine',zh:'mine'},{en:'me',zh:'me'},{en:'I',zh:'I'}], a:1,
+     explain:{en:'A possessive pronoun stands alone: mine.',zh:'所有格代名詞單獨使用：mine。'}},
+    {q:{en:'Past perfect: "When we arrived, the train had already ____."',zh:'過去完成式：「When we arrived, the train had already ____.」'},
+     options:[{en:'leave',zh:'leave'},{en:'left',zh:'left'},{en:'leaving',zh:'leaving'},{en:'leaves',zh:'leaves'}], a:1,
+     explain:{en:'Past perfect = had + past participle (left).',zh:'過去完成式 = had + 過去分詞 (left)。'}},
+    {q:{en:'Present perfect: "She ____ just finished her homework."',zh:'現在完成式：「She ____ just finished her homework.」'},
+     options:[{en:'has',zh:'has'},{en:'have',zh:'have'},{en:'had',zh:'had'},{en:'is',zh:'is'}], a:0,
+     explain:{en:'Present perfect uses has/have + V3. For "she" use "has".',zh:'現在完成式用 has/have + V3。she 用 has。'}},
+    {q:{en:'Superlative: "Mount Everest is the ____ mountain in the world."',zh:'最高級：「Mount Everest is the ____ mountain in the world.」'},
+     options:[{en:'tall',zh:'tall'},{en:'taller',zh:'taller'},{en:'tallest',zh:'tallest'},{en:'most tall',zh:'most tall'}], a:2,
+     explain:{en:'Superlative of a short adjective: the tallest.',zh:'短形容詞的最高級：the tallest。'}},
+    {q:{en:'Which sequence adverb means LAST?',zh:'哪個順序副詞表示「最後」？'},
+     options:[{en:'First',zh:'First'},{en:'Next',zh:'Next'},{en:'Then',zh:'Then'},{en:'Finally',zh:'Finally'}], a:3,
+     explain:{en:'Finally = the last step.',zh:'Finally = 最後一個步驟。'}},
+    {q:{en:'"The toys belonging to the children" = the ____ toys.',zh:'「孩子們的玩具」= the ____ toys.'},
+     options:[{en:'childrens',zh:'childrens'},{en:'children\'s',zh:'children\'s'},{en:'childrens\'',zh:'childrens\''},{en:'child\'s',zh:'child\'s'}], a:1,
+     explain:{en:'"Children" is an irregular plural, so add \'s → children\'s.',zh:'children 是不規則複數，所以加 \'s → children\'s。'}},
+    {q:{en:'Participle adjective: "The long lesson was so ____ that I fell asleep."',zh:'分詞形容詞：「The long lesson was so ____ that I fell asleep.」'},
+     options:[{en:'bored',zh:'bored'},{en:'boring',zh:'boring'},{en:'bore',zh:'bore'},{en:'bores',zh:'bores'}], a:1,
+     explain:{en:'The thing that causes the feeling uses -ing: boring.',zh:'引起感覺的事物用 -ing：boring。'}},
+    {q:{en:'Simple past of "go"?',zh:'go 的過去式？'},
+     options:[{en:'goed',zh:'goed'},{en:'went',zh:'went'},{en:'gone',zh:'gone'},{en:'going',zh:'going'}], a:1,
+     explain:{en:'"go" is irregular: go → went → gone.',zh:'go 是不規則動詞：go → went → gone。'}},
+  ],
+};
+</script>
+<script>
+/* ============================================================
+   CONTENT — MATH
+   ============================================================ */
+CONTENT.math = {
+  emoji:'🔢',
+  title:{en:'Math', zh:'數學'},
+  intro:{en:'Five topics: time, volume & capacity, percentages, surface area, and lines of symmetry.',
+         zh:'五個主題：時間、體積與容量、百分比、表面積、對稱線。'},
+  sections:[
+    {heading:{en:'1 · Time Problems', zh:'1 · 時間問題'},
+     blocks:[
+       {type:'list', items:[
+         {en:'1 minute = 60 seconds. 1 hour = 60 minutes. 1 hour = 3,600 seconds. 1 day = 24 hours.', zh:'1 分鐘 = 60 秒。1 小時 = 60 分鐘。1 小時 = 3,600 秒。1 天 = 24 小時。'},
+         {en:'To convert a BIGGER unit to a smaller unit, multiply (× ). To go from smaller to bigger, divide (÷).', zh:'大單位換小單位用「乘」；小單位換大單位用「除」。'},
+       ]},
+       {type:'example', en:'2 hours = 2 × 60 = 120 minutes. 180 seconds = 180 ÷ 60 = 3 minutes.', zh:'2 小時 = 2 × 60 = 120 分鐘。180 秒 = 180 ÷ 60 = 3 分鐘。'},
+       {type:'example', en:'Multiply intervals: one lap takes 2 min 30 sec, so 4 laps = 4 × 2 min 30 sec = 10 minutes.', zh:'乘以時間間隔：跑一圈花 2 分 30 秒，4 圈 = 4 × 2 分 30 秒 = 10 分鐘。'},
+     ]},
+    {heading:{en:'2 · Volume & Capacity', zh:'2 · 體積與容量'},
+     blocks:[
+       {type:'fact', en:'Volume is the space an object takes up. Capacity is how much a container can hold.', zh:'體積是物體佔據的空間。容量是容器能裝多少。'},
+       {type:'list', items:[
+         {en:'Capacity units: milliliter (mL) and liter (L). 1 L = 1,000 mL.', zh:'容量單位：毫升 (mL) 和公升 (L)。1 L = 1,000 mL。'},
+         {en:'Volume units: cubic centimeter (cm³) and cubic meter (m³). 1 cm³ = 1 mL.', zh:'體積單位：立方公分 (cm³) 和立方公尺 (m³)。1 cm³ = 1 mL。'},
+         {en:'Volume of a box = length × width × height.', zh:'箱子的體積 = 長 × 寬 × 高。'},
+       ]},
+       {type:'example', en:'3 L = 3 × 1,000 = 3,000 mL. A box 2 × 3 × 4 cm has a volume of 24 cm³.', zh:'3 L = 3 × 1,000 = 3,000 mL。一個 2 × 3 × 4 公分的箱子體積是 24 cm³。'},
+     ]},
+    {heading:{en:'3 · Percentages', zh:'3 · 百分比'},
+     blocks:[
+       {type:'fact', en:'Percent (%) means "out of 100".', zh:'百分比 (%) 的意思是「每一百中的幾」。'},
+       {type:'table',
+        cols:[{en:'To change…',zh:'要轉換……'},{en:'Do this',zh:'這樣做'},{en:'Example',zh:'例子'}],
+        rows:[
+          [{en:'Fraction → Percent',zh:'分數 → 百分比'},{en:'Make the bottom 100, or divide top ÷ bottom then × 100.',zh:'把分母變成 100，或上÷下再×100。'},{en:'3/4 = 75%',zh:'3/4 = 75%'}],
+          [{en:'Decimal → Percent',zh:'小數 → 百分比'},{en:'Move the decimal point 2 places RIGHT (× 100).',zh:'小數點往「右」移 2 位（× 100）。'},{en:'0.25 = 25%',zh:'0.25 = 25%'}],
+          [{en:'Percent → Decimal',zh:'百分比 → 小數'},{en:'Move the decimal point 2 places LEFT (÷ 100).',zh:'小數點往「左」移 2 位（÷ 100）。'},{en:'60% = 0.6',zh:'60% = 0.6'}],
+        ]},
+       {type:'tip', en:'To COMPARE numbers in different forms (fraction, decimal, percent), change them ALL to the same form first.', zh:'要「比較」不同形式的數（分數、小數、百分比），先全部換成同一種形式再比。'},
+     ]},
+    {heading:{en:'4 · Surface Area of a Rectangular Prism', zh:'4 · 長方體的表面積'},
+     blocks:[
+       {type:'fact', en:'A rectangular prism has 6 faces, made of 3 pairs of identical faces. Surface area is the total area of all 6 faces, in square units.', zh:'長方體有 6 個面，由 3 對相同的面組成。表面積是 6 個面的總面積，單位是「平方單位」。'},
+       {type:'fact', en:'A NET is the prism "unfolded" flat. It helps you see and add up all 6 faces. A lateral face is a side face (not the top or bottom).', zh:'展開圖 (net) 是把長方體「攤平」。它幫你看到並加總 6 個面。側面 (lateral face) 是旁邊的面（不是上下面）。'},
+       {type:'html', html:`<div style="text-align:center;background:var(--soft);border-radius:14px;padding:12px;margin:10px 0">
+         <svg viewBox="0 0 240 180" width="240" height="180" role="img" aria-label="net of a box">
+           <g fill="#cfe6ff" stroke="#2a8cff" stroke-width="2">
+             <rect x="90" y="10" width="60" height="40"/>
+             <rect x="90" y="50" width="60" height="60"/>
+             <rect x="90" y="110" width="60" height="40"/>
+             <rect x="30" y="50" width="60" height="60"/>
+             <rect x="150" y="50" width="60" height="60"/>
+             <rect x="210" y="50" width="28" height="60"/>
+           </g>
+         </svg>
+         <div style="font-size:.88rem;color:var(--muted)">${bi('A net of a rectangular prism (6 faces unfolded)','長方體的展開圖（6 個面攤平）')}</div>
+       </div>`},
+       {type:'example', en:'Box 4 × 3 × 2: SA = 2(l×w + l×h + w×h) = 2(4×3 + 4×2 + 3×2) = 2(12 + 8 + 6) = 2 × 26 = 52 square units.', zh:'箱子 4 × 3 × 2：表面積 = 2(長×寬 + 長×高 + 寬×高) = 2(4×3 + 4×2 + 3×2) = 2(12 + 8 + 6) = 2 × 26 = 52 平方單位。'},
+     ]},
+    {heading:{en:'5 · Line of Symmetry', zh:'5 · 對稱線'},
+     blocks:[
+       {type:'fact', en:'A line of symmetry divides a figure into two identical halves that are mirror images. It can be horizontal, vertical, or diagonal.', zh:'對稱線把圖形分成兩個一模一樣、像鏡子一樣的兩半。它可以是水平、垂直或斜的。'},
+       {type:'html', html:`<div style="text-align:center;background:var(--soft);border-radius:14px;padding:12px;margin:10px 0">
+         <svg viewBox="0 0 240 110" width="240" height="110" role="img" aria-label="lines of symmetry">
+           <rect x="20" y="25" width="60" height="60" fill="#ffe1ec" stroke="#ff6b9d" stroke-width="2"/>
+           <line x1="50" y1="20" x2="50" y2="90" stroke="#ff6b9d" stroke-dasharray="4" stroke-width="2"/>
+           <line x1="15" y1="55" x2="85" y2="55" stroke="#ff6b9d" stroke-dasharray="4" stroke-width="2"/>
+           <line x1="20" y1="25" x2="80" y2="85" stroke="#ff6b9d" stroke-dasharray="4" stroke-width="2"/>
+           <line x1="80" y1="25" x2="20" y2="85" stroke="#ff6b9d" stroke-dasharray="4" stroke-width="2"/>
+           <text x="50" y="103" text-anchor="middle" font-size="11" fill="#b5306a">Square = 4 lines</text>
+           <rect x="150" y="30" width="70" height="40" fill="#e1f0ff" stroke="#2a8cff" stroke-width="2"/>
+           <line x1="185" y1="22" x2="185" y2="78" stroke="#2a8cff" stroke-dasharray="4" stroke-width="2"/>
+           <line x1="142" y1="50" x2="228" y2="50" stroke="#2a8cff" stroke-dasharray="4" stroke-width="2"/>
+           <text x="185" y="92" text-anchor="middle" font-size="11" fill="#2a6fd0">Rectangle = 2 lines</text>
+         </svg></div>`},
+       {type:'list', items:[
+         {en:'Square = 4 lines of symmetry. Rectangle = 2. Equilateral triangle = 3. Circle = infinite!', zh:'正方形 = 4 條對稱線。長方形 = 2 條。正三角形 = 3 條。圓形 = 無限多條！'},
+         {en:'Letter A has 1 (vertical). Letter H has 2. Letter S has 0.', zh:'字母 A 有 1 條（垂直）。字母 H 有 2 條。字母 S 有 0 條。'},
+       ]},
+     ]},
+  ],
+  mathSets:[
+    {title:{en:'Time & Capacity Practice', zh:'時間與容量練習'},
+     questions:[
+       {q:{en:'How many minutes are in 3 hours?',zh:'3 小時有幾分鐘？'}, ans:'180'},
+       {q:{en:'How many seconds are in 5 minutes?',zh:'5 分鐘有幾秒？'}, ans:'300'},
+       {q:{en:'2 L = ? mL',zh:'2 L = ? mL'}, ans:'2000'},
+       {q:{en:'4000 mL = ? L',zh:'4000 mL = ? L'}, ans:'4'},
+       {q:{en:'How many hours are in 2 days?',zh:'2 天有幾小時？'}, ans:'48'},
+     ]},
+    {title:{en:'Percentage Practice (write the number)', zh:'百分比練習（寫數字）'},
+     questions:[
+       {q:{en:'Write 1/2 as a percent.',zh:'把 1/2 寫成百分比。'}, ans:'50', accept:['50%']},
+       {q:{en:'Write 3/4 as a percent.',zh:'把 3/4 寫成百分比。'}, ans:'75', accept:['75%']},
+       {q:{en:'Write 0.25 as a percent.',zh:'把 0.25 寫成百分比。'}, ans:'25', accept:['25%']},
+       {q:{en:'Write 60% as a decimal.',zh:'把 60% 寫成小數。'}, ans:'0.6', accept:['.6']},
+       {q:{en:'Write 1/4 as a percent.',zh:'把 1/4 寫成百分比。'}, ans:'25', accept:['25%']},
+     ]},
+    {title:{en:'Surface Area & Volume Practice', zh:'表面積與體積練習'},
+     questions:[
+       {q:{en:'How many faces does a rectangular prism have?',zh:'長方體有幾個面？'}, ans:'6'},
+       {q:{en:'Volume of a box 2 × 3 × 4 (cubic units)?',zh:'箱子 2 × 3 × 4 的體積（立方單位）？'}, ans:'24'},
+       {q:{en:'Surface area of a box 4 × 3 × 2? (use 2(lw+lh+wh))',zh:'箱子 4 × 3 × 2 的表面積？（用 2(lw+lh+wh)）'}, ans:'52'},
+       {q:{en:'Volume of a cube with side 5?',zh:'邊長 5 的正方體體積？'}, ans:'125'},
+       {q:{en:'How many lines of symmetry does a square have?',zh:'正方形有幾條對稱線？'}, ans:'4'},
+     ]},
+  ],
+  quiz:[
+    {q:{en:'How many minutes are in 2 hours?',zh:'2 小時有幾分鐘？'},
+     options:[{en:'60',zh:'60'},{en:'100',zh:'100'},{en:'120',zh:'120'},{en:'200',zh:'200'}], a:2,
+     explain:{en:'2 × 60 = 120 minutes.',zh:'2 × 60 = 120 分鐘。'}},
+    {q:{en:'1 liter (L) equals how many milliliters (mL)?',zh:'1 公升 (L) 等於幾毫升 (mL)？'},
+     options:[{en:'10',zh:'10'},{en:'100',zh:'100'},{en:'1,000',zh:'1,000'},{en:'10,000',zh:'10,000'}], a:2,
+     explain:{en:'1 L = 1,000 mL.',zh:'1 L = 1,000 mL。'}},
+    {q:{en:'Write 3/4 as a percent.',zh:'把 3/4 寫成百分比。'},
+     options:[{en:'34%',zh:'34%'},{en:'43%',zh:'43%'},{en:'75%',zh:'75%'},{en:'80%',zh:'80%'}], a:2,
+     explain:{en:'3 ÷ 4 = 0.75 = 75%.',zh:'3 ÷ 4 = 0.75 = 75%。'}},
+    {q:{en:'Write 0.25 as a percent.',zh:'把 0.25 寫成百分比。'},
+     options:[{en:'2.5%',zh:'2.5%'},{en:'25%',zh:'25%'},{en:'250%',zh:'250%'},{en:'0.25%',zh:'0.25%'}], a:1,
+     explain:{en:'Move the decimal 2 places right: 0.25 → 25%.',zh:'小數點右移 2 位：0.25 → 25%。'}},
+    {q:{en:'Write 60% as a decimal.',zh:'把 60% 寫成小數。'},
+     options:[{en:'6.0',zh:'6.0'},{en:'0.06',zh:'0.06'},{en:'0.6',zh:'0.6'},{en:'600',zh:'600'}], a:2,
+     explain:{en:'Move the decimal 2 places left: 60% → 0.6.',zh:'小數點左移 2 位：60% → 0.6。'}},
+    {q:{en:'How many faces does a rectangular prism have?',zh:'長方體有幾個面？'},
+     options:[{en:'4',zh:'4'},{en:'5',zh:'5'},{en:'6',zh:'6'},{en:'8',zh:'8'}], a:2,
+     explain:{en:'A rectangular prism has 6 faces (3 pairs).',zh:'長方體有 6 個面（3 對）。'}},
+    {q:{en:'Surface area of a box 4 × 3 × 2?',zh:'箱子 4 × 3 × 2 的表面積是多少？'},
+     options:[{en:'24 square units',zh:'24 平方單位'},{en:'52 square units',zh:'52 平方單位'},{en:'26 square units',zh:'26 平方單位'},{en:'104 square units',zh:'104 平方單位'}], a:1,
+     explain:{en:'2(4×3 + 4×2 + 3×2) = 2(12+8+6) = 52.',zh:'2(4×3 + 4×2 + 3×2) = 2(12+8+6) = 52。'}},
+    {q:{en:'How many lines of symmetry does a SQUARE have?',zh:'正方形有幾條對稱線？'},
+     options:[{en:'1',zh:'1'},{en:'2',zh:'2'},{en:'4',zh:'4'},{en:'0',zh:'0'}], a:2,
+     explain:{en:'A square has 4 lines of symmetry.',zh:'正方形有 4 條對稱線。'}},
+    {q:{en:'What is the volume of a box 2 × 3 × 4 cm?',zh:'2 × 3 × 4 公分的箱子體積是多少？'},
+     options:[{en:'9 cm³',zh:'9 cm³'},{en:'24 cm³',zh:'24 cm³'},{en:'12 cm³',zh:'12 cm³'},{en:'48 cm³',zh:'48 cm³'}], a:1,
+     explain:{en:'Volume = 2 × 3 × 4 = 24 cm³.',zh:'體積 = 2 × 3 × 4 = 24 cm³。'}},
+    {q:{en:'180 seconds = how many minutes?',zh:'180 秒 = 幾分鐘？'},
+     options:[{en:'2',zh:'2'},{en:'3',zh:'3'},{en:'6',zh:'6'},{en:'18',zh:'18'}], a:1,
+     explain:{en:'180 ÷ 60 = 3 minutes.',zh:'180 ÷ 60 = 3 分鐘。'}},
+  ],
+};
+</script>
+<!-- DATA-INSERT -->
+<script>
+buildTabs();
+show('home');
+</script>
+</body>
+</html>
