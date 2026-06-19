@@ -308,6 +308,8 @@ function speakEl(el){ if(el) speak(el.getAttribute('data-say')); }
 // reads the English (.en) found inside the speaker button's parent block — no attribute escaping needed
 function speakBlock(btn){ const p=btn.parentElement; if(!p) return; const en=p.querySelector('.en'); if(en) speak(en.textContent); }
 function spk(){ return '<button class="spk" type="button" title="聽發音 / read aloud" onclick="event.stopPropagation();speakBlock(this)">🔊</button>'; }
+const PRAISE=['Correct!','Great job!','Well done!','Nice work!','Excellent!','Awesome!','You got it!'];
+function quizPraise(){ return PRAISE[Math.floor(Math.random()*PRAISE.length)]; }
 
 /* ---- key-point highlighting (auto-marks important terms in 重點整理) ---- */
 let CUR_KEY='';
@@ -534,7 +536,8 @@ function answerQ(key,i,j){
     if(k===j && j!==correct) b.classList.add('wrong');
   });
   const ex=qd.querySelector('.explain'); if(ex && ex.innerHTML.trim()) ex.hidden=false;
-  if(j===correct){st.score++; popStar(qd);}
+  if(j===correct){ st.score++; popStar(qd); speak(quizPraise()); }
+  else { speak('The answer is: ' + q.options[correct].en); }
   const done=Object.keys(st.answered).length;
   document.getElementById('score-'+key).innerHTML = `${bi('Score','得分')}: ${st.score} / ${st.qs.length}`;
   if(done===st.qs.length) finishBar('score-'+key, st.score, st.qs.length);
@@ -643,10 +646,11 @@ function checkMath(key,i){
   if(ok){
     fb.textContent='✅ '+(allZh?'答對了!':'Correct!'); fb.className='mfb ok';
     if(!st.done[i]){st.done[i]=1; st.correct++; popStar(fb);}
-    inp.disabled=true;
+    inp.disabled=true; speak(quizPraise());
   }else{
     fb.innerHTML='❌ '+bi('Answer: '+q.ans,'答案：'+q.ans); fb.className='mfb no';
     if(st.done[i]===undefined) st.done[i]=0;
+    speak('The answer is ' + q.ans);
   }
   document.getElementById('mathscore-'+key).innerHTML=`${bi('Correct','答對')}: ${st.correct} / ${st.m.questions.length}`;
   const total=st.m.questions.length, answered=Object.keys(st.done).length;
