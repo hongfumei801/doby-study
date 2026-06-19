@@ -124,8 +124,11 @@
   .quizcard h3{color:var(--p4)}
   .q{padding:12px 0 12px 10px; border-left:4px solid transparent; border-bottom:1px dashed var(--line); border-radius:8px; transition:background .15s}
   .q:last-of-type{border-bottom:none}
-  .q:focus{outline:none}
   .q.active{border-left-color:var(--p1); background:#f7f5ff}
+  /* visible keyboard focus ring (only shows for keyboard, not mouse) */
+  :focus-visible{outline:3px solid var(--p1); outline-offset:2px; border-radius:6px}
+  .tabhint{display:inline-flex; align-items:center; gap:3px; flex-wrap:wrap; color:var(--muted); font-size:.78rem; margin-left:6px}
+  .tabhint kbd{background:#fff; border:1px solid var(--line); border-bottom-width:2px; border-radius:5px; padding:0 5px; font-size:.74rem; font-family:inherit}
   .quiznav{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; background:var(--soft); border-radius:12px; padding:9px 13px; margin-bottom:12px; font-size:.85rem; position:sticky; top:64px; z-index:5}
   .kbdhint{color:var(--muted)}
   .qpos{font-weight:800; color:var(--p4); white-space:nowrap}
@@ -412,7 +415,8 @@ function initInteractive(key){
 
 /* ---- tabs ---- */
 function buildTabs(){
-  document.getElementById('tabs').innerHTML = TAB_ORDER.map(t=>`<button id="tab-${t.key}" onclick="show('${t.key}')">${t.label}</button>`).join('');
+  document.getElementById('tabs').innerHTML = TAB_ORDER.map(t=>`<button id="tab-${t.key}" onclick="show('${t.key}')">${t.label}</button>`).join('')
+    + '<span class="tabhint">⌨️ <kbd>[</kbd> <kbd>]</kbd> 或 <kbd>Alt</kbd>+<kbd>1~5</kbd> 切換科目 · <kbd>Tab</kbd> 移動 · <kbd>Enter</kbd> 選擇</span>';
 }
 function show(key){
   activeKey=key;
@@ -438,14 +442,13 @@ function buildQuiz(el, qs, key){
     + qs.map((q,i)=>`
     <div class="q${i===0?' active':''}" id="${key}-q${i}" tabindex="0" onclick="quizFocus('${key}',${i})">
       <div class="qtext">Q${i+1}. ${q.isNew?'<span class="newbadge">🆕 NEW 新</span>':''}${bi(q.q.en,q.q.zh)}${spk()}</div>
-      <div class="opts">${q.options.map((o,j)=>`<div class="opt" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}${spk()}</div>`).join('')}</div>
+      <div class="opts">${q.options.map((o,j)=>`<div class="opt" tabindex="0" role="button" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}${spk()}</div>`).join('')}</div>
       <div class="explain" hidden>${q.explain?bi('💡 '+q.explain.en,'💡 '+q.explain.zh)+spk():''}</div>
       ${i<qs.length-1?`<button class="qnav" onclick="event.stopPropagation();quizActivate('${key}',${i+1})">下一題 ⬇</button>`:''}
     </div>`).join('')
     + `<div class="scorebar" id="score-${key}">${bi('Score','得分')}: 0 / ${qs.length}</div>`
     + `<button class="btn reset" onclick="show(activeKey)">🔄 ${bi('Try again','重新測驗')}</button>`;
-  el.tabIndex=0;
-  el.onkeydown=function(e){ quizKey(e,key); };
+  el.tabIndex=-1;
 }
 function quizSetActive(key, idx, scroll){
   const st=QUIZSTATE[key]; if(!st) return;
@@ -459,17 +462,37 @@ function quizSetActive(key, idx, scroll){
 }
 function quizActivate(key, idx){ quizSetActive(key, idx, true); }
 function quizFocus(key, idx){ quizSetActive(key, idx, false); }
-function quizKey(e, key){
-  const tn=(e.target&&e.target.tagName)||''; if(/^(INPUT|SELECT|TEXTAREA)$/.test(tn)) return;
-  const st=QUIZSTATE[key]; if(!st) return;
-  const k=e.key;
-  if(k==='ArrowDown'||k==='ArrowRight'||k==='Enter'){ e.preventDefault(); quizActivate(key, st.current+1); }
-  else if(k==='ArrowUp'||k==='ArrowLeft'){ e.preventDefault(); quizActivate(key, st.current-1); }
-  else {
+function switchTab(delta){
+  const i=TAB_ORDER.findIndex(t=>t.key===activeKey);
+  const n=((i<0?0:i)+delta+TAB_ORDER.length)%TAB_ORDER.length;
+  show(TAB_ORDER[n].key);
+}
+function globalKey(e){
+  const t=e.target, tn=(t&&t.tagName)||'';
+  const typing=/^(INPUT|SELECT|TEXTAREA)$/.test(tn);
+  // direct subject jump: Alt+1..5 (allowed even while typing)
+  if(e.altKey && /^[1-9]$/.test(e.key)){ const i=+e.key-1; if(TAB_ORDER[i]){ e.preventDefault(); show(TAB_ORDER[i].key);} return; }
+  if(typing) return;                       // never steal keys from input boxes / select
+  // previous / next subject
+  if(e.key===']'){ e.preventDefault(); switchTab(1); return; }
+  if(e.key==='['){ e.preventDefault(); switchTab(-1); return; }
+  // Enter / Space activates the focused clickable (options, match cards, chips, buckets...) — but NOT the question container
+  if((e.key==='Enter'||e.key===' ') && t && t.getAttribute && t.getAttribute('role')==='button' && !(t.classList&&t.classList.contains('q'))){
+    e.preventDefault(); t.click(); return;
+  }
+  // quiz answering / navigation when focus is inside a quiz
+  const quizRoot=(t&&t.closest)?t.closest('[id^="quiz-"]'):null;
+  if(quizRoot){
+    const key=quizRoot.id.replace('quiz-','');
+    const st=QUIZSTATE[key]; if(!st) return;
+    let cur=st.current;
+    const qEl=t.closest('.q'); if(qEl){ const m=qEl.id.match(/-q(\d+)$/); if(m){ cur=+m[1]; st.current=cur; } }
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key==='Enter'){ e.preventDefault(); quizActivate(key, cur+1); return; }
+    if(e.key==='ArrowUp'||e.key==='ArrowLeft'){ e.preventDefault(); quizActivate(key, cur-1); return; }
     let j=-1;
-    if(/^[1-9]$/.test(k)) j=parseInt(k,10)-1;
-    else if(/^[a-dA-D]$/.test(k)) j=k.toUpperCase().charCodeAt(0)-65;
-    if(j>=0){ const q=st.qs[st.current]; if(q && j<q.options.length){ e.preventDefault(); answerQ(key, st.current, j); } }
+    if(/^[1-9]$/.test(e.key)) j=+e.key-1;
+    else if(/^[a-dA-D]$/.test(e.key)) j=e.key.toUpperCase().charCodeAt(0)-65;
+    if(j>=0){ const q=st.qs[cur]; if(q && j<q.options.length){ e.preventDefault(); answerQ(key, cur, j);} return; }
   }
 }
 function answerQ(key,i,j){
@@ -500,8 +523,8 @@ function buildMatch(el, pairs, key){
   MATCHSTATE[key]={sel:null, matched:0, total:pairs.length};
   el.innerHTML = `<p class="hint">${bi('Click an English word, then click its Chinese meaning.','先點英文單字，再點對應的中文意思。')}</p>
     <div class="matchwrap">
-      <div class="mcol">${L.map(x=>`<div class="mcell" data-side="L" data-id="${x.id}" onclick="pickMatch('${key}','L',${x.id},this)">${x.t}<button class="spk" type="button" title="聽發音" data-say="${x.t}" onclick="event.stopPropagation();speakEl(this)">🔊</button></div>`).join('')}</div>
-      <div class="mcol">${R.map(x=>`<div class="mcell" data-side="R" data-id="${x.id}" onclick="pickMatch('${key}','R',${x.id},this)">${x.t}</div>`).join('')}</div>
+      <div class="mcol">${L.map(x=>`<div class="mcell" tabindex="0" role="button" data-side="L" data-id="${x.id}" onclick="pickMatch('${key}','L',${x.id},this)">${x.t}<button class="spk" type="button" title="聽發音" data-say="${x.t}" onclick="event.stopPropagation();speakEl(this)">🔊</button></div>`).join('')}</div>
+      <div class="mcol">${R.map(x=>`<div class="mcell" tabindex="0" role="button" data-side="R" data-id="${x.id}" onclick="pickMatch('${key}','R',${x.id},this)">${x.t}</div>`).join('')}</div>
     </div>
     <div class="scorebar" id="mscore-${key}">${bi('Matched','配對成功')}: 0 / ${pairs.length}</div>`;
 }
@@ -532,8 +555,8 @@ function buildSort(el, data, key){
   const items=shuffle(data.items.map((it,i)=>({...it,i})));
   SORTSTATE[key]={sel:null, placed:0, total:items.length};
   el.innerHTML = `<p class="hint">${bi('Click a card, then click the correct box.','先點卡片，再點正確的分類框。')}</p>
-    <div class="tray" id="tray-${key}">${items.map(it=>`<div class="chip" id="chip-${key}-${it.i}" data-b="${it.b}" onclick="pickChip('${key}',${it.i},this)">${bi(it.en,it.zh)}</div>`).join('')}</div>
-    <div class="buckets">${data.buckets.map((b,bi2)=>`<div class="bucket" onclick="dropChip('${key}',${bi2})"><div class="bktitle">${bi(b.en,b.zh)}</div><div class="bkitems" id="bk-${key}-${bi2}"></div></div>`).join('')}</div>
+    <div class="tray" id="tray-${key}">${items.map(it=>`<div class="chip" tabindex="0" role="button" id="chip-${key}-${it.i}" data-b="${it.b}" onclick="pickChip('${key}',${it.i},this)">${bi(it.en,it.zh)}</div>`).join('')}</div>
+    <div class="buckets">${data.buckets.map((b,bi2)=>`<div class="bucket" tabindex="0" role="button" onclick="dropChip('${key}',${bi2})"><div class="bktitle">${bi(b.en,b.zh)}</div><div class="bkitems" id="bk-${key}-${bi2}"></div></div>`).join('')}</div>
     <div class="scorebar" id="sscore-${key}">${bi('Placed','已分類')}: 0 / ${items.length}</div>`;
 }
 function pickChip(key,i,el){
@@ -1415,6 +1438,7 @@ Object.keys(_baseQ).forEach(function(k){ CONTENT[k].quiz.forEach(function(q,i){ 
 <script>
 buildTabs();
 show('home');
+document.addEventListener('keydown', globalKey);   // full-site keyboard control
 if('speechSynthesis' in window){ populateVoicePicker(); setTimeout(populateVoicePicker,250); setTimeout(populateVoicePicker,1200); }
 </script>
 </body>
