@@ -245,15 +245,18 @@ function speak(text){
   }catch(e){}
 }
 function speakEl(el){ if(el) speak(el.getAttribute('data-say')); }
+// reads the English (.en) found inside the speaker button's parent block — no attribute escaping needed
+function speakBlock(btn){ const p=btn.parentElement; if(!p) return; const en=p.querySelector('.en'); if(en) speak(en.textContent); }
+function spk(){ return '<button class="spk" type="button" title="聽發音 / read aloud" onclick="event.stopPropagation();speakBlock(this)">🔊</button>'; }
 
 /* ---- block rendering ---- */
 function renderBlock(b){
   switch(b.type){
-    case 'fact':    return `<p class="fact">${bi(b.en,b.zh)}</p>`;
-    case 'note':    return `<div class="note">${bi(b.en,b.zh)}</div>`;
-    case 'tip':     return `<div class="tip">💡 ${bi(b.en,b.zh)}</div>`;
-    case 'example': return `<div class="example">📌 ${bi(b.en,b.zh)}</div>`;
-    case 'list':    return '<ul class="bilist">'+b.items.map(it=>`<li>${bi(it.en,it.zh)}</li>`).join('')+'</ul>';
+    case 'fact':    return `<p class="fact">${bi(b.en,b.zh)}${spk()}</p>`;
+    case 'note':    return `<div class="note">${bi(b.en,b.zh)}${spk()}</div>`;
+    case 'tip':     return `<div class="tip">💡 ${bi(b.en,b.zh)}${spk()}</div>`;
+    case 'example': return `<div class="example">📌 ${bi(b.en,b.zh)}${spk()}</div>`;
+    case 'list':    return '<ul class="bilist">'+b.items.map(it=>`<li>${bi(it.en,it.zh)}${spk()}</li>`).join('')+'</ul>';
     case 'table':   return renderTable(b);
     case 'html':    return b.html;
     case 'subjectcards': return renderSubjectCards();
@@ -284,10 +287,10 @@ function renderSubject(key){
   if(!c) return '<div class="card">內容載入中… (還沒做好這一科)</div>';
   let h='<section class="subject">';
   h+=`<div class="subhead"><h2>${c.emoji||''} ${bi(c.title.en,c.title.zh)}</h2>`;
-  if(c.intro) h+=`<p class="intro">${bi(c.intro.en,c.intro.zh)}</p>`;
+  if(c.intro) h+=`<p class="intro">${bi(c.intro.en,c.intro.zh)}${spk()}</p>`;
   h+='</div>';
   (c.sections||[]).forEach(s=>{
-    h+=`<div class="card lesson"><h3>${bi(s.heading.en,s.heading.zh)}</h3>`;
+    h+=`<div class="card lesson"><h3>${bi(s.heading.en,s.heading.zh)}${spk()}</h3>`;
     (s.blocks||[]).forEach(b=> h+=renderBlock(b));
     h+='</div>';
   });
@@ -341,8 +344,8 @@ function buildQuiz(el, qs, key){
   QUIZSTATE[key]={qs, answered:{}, score:0};
   el.innerHTML = qs.map((q,i)=>`
     <div class="q" id="${key}-q${i}">
-      <div class="qtext">Q${i+1}. ${q.isNew?'<span class="newbadge">🆕 NEW 新</span>':''}${bi(q.q.en,q.q.zh)}</div>
-      <div class="opts">${q.options.map((o,j)=>`<div class="opt" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}</div>`).join('')}</div>
+      <div class="qtext">Q${i+1}. ${q.isNew?'<span class="newbadge">🆕 NEW 新</span>':''}${bi(q.q.en,q.q.zh)}${spk()}</div>
+      <div class="opts">${q.options.map((o,j)=>`<div class="opt" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}${spk()}</div>`).join('')}</div>
       <div class="explain" hidden>${q.explain?bi('💡 '+q.explain.en,'💡 '+q.explain.zh):''}</div>
     </div>`).join('')
     + `<div class="scorebar" id="score-${key}">${bi('Score','得分')}: 0 / ${qs.length}</div>`
