@@ -120,6 +120,7 @@
   .q{padding:12px 0; border-bottom:1px dashed var(--line)}
   .q:last-of-type{border-bottom:none}
   .qtext{font-weight:600; margin-bottom:8px}
+  .newbadge{display:inline-block; background:linear-gradient(135deg,#ff6b9d,#ff9a6b); color:#fff; font-size:.68rem; font-weight:800; padding:2px 9px; border-radius:999px; margin-right:7px; vertical-align:middle; letter-spacing:.4px; box-shadow:0 1px 5px rgba(255,107,157,.5)}
   .opts{display:flex; flex-direction:column; gap:8px}
   .opt{
     background:#fff; border:2px solid var(--line); border-radius:12px;
@@ -340,7 +341,7 @@ function buildQuiz(el, qs, key){
   QUIZSTATE[key]={qs, answered:{}, score:0};
   el.innerHTML = qs.map((q,i)=>`
     <div class="q" id="${key}-q${i}">
-      <div class="qtext">Q${i+1}. ${bi(q.q.en,q.q.zh)}</div>
+      <div class="qtext">Q${i+1}. ${q.isNew?'<span class="newbadge">🆕 NEW 新</span>':''}${bi(q.q.en,q.q.zh)}</div>
       <div class="opts">${q.options.map((o,j)=>`<div class="opt" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}</div>`).join('')}</div>
       <div class="explain" hidden>${q.explain?bi('💡 '+q.explain.en,'💡 '+q.explain.zh):''}</div>
     </div>`).join('')
@@ -1119,6 +1120,170 @@ CONTENT.math = {
      explain:{en:'180 ÷ 60 = 3 minutes.',zh:'180 ÷ 60 = 3 分鐘。'}},
   ],
 };
+</script>
+<script>
+/* ============================================================
+   EXTRA QUIZ QUESTIONS (additive — covers untested material)
+   ============================================================ */
+/* remember how many questions existed BEFORE this block -> everything added below is tagged 🆕 */
+var _baseQ={science:CONTENT.science.quiz.length, reading:CONTENT.reading.quiz.length, grammar:CONTENT.grammar.quiz.length, math:CONTENT.math.quiz.length};
+CONTENT.science.quiz.push(
+  {q:{en:'Which is an example of RUNNING water?',zh:'下列哪個是「流動水」的例子？'},
+   options:[{en:'A lake',zh:'湖泊'},{en:'A reservoir',zh:'水庫'},{en:'A river',zh:'河流'},{en:'A pond',zh:'池塘'}], a:2,
+   explain:{en:'Running water moves regularly — rivers and streams.',zh:'流動水會固定流動，例如河流和溪流。'}},
+  {q:{en:'What is a reservoir?',zh:'什麼是水庫 (reservoir)？'},
+   options:[{en:'A wall across a river',zh:'橫跨河流的牆'},{en:'An artificial lake built for storing water',zh:'人造、用來儲水的湖'},{en:'A type of glacier',zh:'一種冰河'},{en:'Salt water in the ocean',zh:'海裡的鹹水'}], a:1,
+   explain:{en:'A reservoir is an artificial lake for storing water; a dam creates one.',zh:'水庫是人造的儲水湖，由水壩造成。'}},
+  {q:{en:'How do humans usually reach groundwater?',zh:'人類通常怎麼取得地下水？'},
+   options:[{en:'By drilling a well and pumping it up',zh:'鑽井並把水抽上來'},{en:'By boiling the ocean',zh:'把海煮沸'},{en:'By melting glaciers',zh:'融化冰河'},{en:'By collecting rain only',zh:'只收集雨水'}], a:0,
+   explain:{en:'We drill a well into an aquifer and pump the water up.',zh:'我們鑽井進入含水層，把水抽上來。'}},
+  {q:{en:'The 2010 Gulf of Mexico disaster was an example of...?',zh:'2010 年墨西哥灣的災難是哪一種例子？'},
+   options:[{en:'Acid rain',zh:'酸雨'},{en:'An algal bloom',zh:'藻華'},{en:'An oil spill',zh:'漏油'},{en:'A hurricane',zh:'颶風'}], a:2,
+   explain:{en:'It was the largest oil spill in US history (an oil rig exploded).',zh:'那是美國史上最大的漏油事件（鑽油平台爆炸）。'}},
+  {q:{en:'In conservation, "Recycle" water means...?',zh:'在保育中，「Recycle 回收」水的意思是？'},
+   options:[{en:'Using less water',zh:'用更少的水'},{en:'Using the same water again for another need',zh:'把同樣的水再用一次'},{en:'Cleaning used water at a treatment facility so it can be used again',zh:'在淨水廠處理用過的水，讓它能再用'},{en:'Freezing water into ice',zh:'把水結成冰'}], a:2,
+   explain:{en:'Recycle = treating used water so it can be used again. (Using it again as-is is Reuse.)',zh:'Recycle = 處理用過的水以再次使用。（直接再用一次是 Reuse。）'}},
+  {q:{en:'Which 1974 U.S. law keeps drinking water clean and safe?',zh:'哪一條 1974 年的美國法律讓飲用水乾淨安全？'},
+   options:[{en:'The Clean Air Act',zh:'空氣清淨法'},{en:'The Safe Water Drinking Act',zh:'安全飲用水法'},{en:'The Water Cycle Law',zh:'水循環法'},{en:'The Ocean Act',zh:'海洋法'}], a:1,
+   explain:{en:'The Safe Water Drinking Act (1974) sets water-quality rules.',zh:'《安全飲用水法》(1974) 制定水質規範。'}},
+  {q:{en:'Deposition usually happens in...?',zh:'沉積通常發生在……'},
+   options:[{en:'fast-moving water',zh:'流速快的水'},{en:'slow-moving water',zh:'流速慢的水'},{en:'dry deserts',zh:'乾燥的沙漠'},{en:'the sky',zh:'天空'}], a:1,
+   explain:{en:'Slow water drops (deposits) the sediment it carries.',zh:'慢速的水會把攜帶的沉積物放下（沉積）。'}},
+  {q:{en:'Which landform is a FAN shape on LAND, where a river leaves a steep narrow canyon?',zh:'哪種地形是「陸地上的扇形」，在河流離開陡峭狹窄峽谷處形成？'},
+   options:[{en:'Delta',zh:'三角洲'},{en:'Alluvial fan',zh:'沖積扇'},{en:'Floodplain',zh:'氾濫平原'},{en:'Wetland',zh:'濕地'}], a:1,
+   explain:{en:'An alluvial fan forms on land (e.g. the Hualien alluvial fans).',zh:'沖積扇在陸地上形成（例如花蓮沖積扇）。'}},
+  {q:{en:'What is a storm surge?',zh:'什麼是風暴潮 (storm surge)？'},
+   options:[{en:'A gentle breeze',zh:'微風'},{en:'Ocean water pushed onto land by hurricane winds',zh:'被颶風吹上陸地的海水'},{en:'A kind of glacier',zh:'一種冰河'},{en:'Rain that contains acid',zh:'含酸的雨'}], a:1,
+   explain:{en:'Hurricane winds push ocean water onto land, causing coastal flooding.',zh:'颶風把海水推上陸地，造成沿海淹水。'}},
+  {q:{en:'As a glacier moves, "transportation" means it...?',zh:'冰河移動時，「搬運 (transportation)」是指它……'},
+   options:[{en:'drops sediment',zh:'放下沉積物'},{en:'scrapes and removes rock',zh:'刮除岩石'},{en:'carries rock and sediment',zh:'攜帶岩石和沉積物'},{en:'melts completely',zh:'完全融化'}], a:2,
+   explain:{en:'Transportation = the glacier carries rock and sediment along.',zh:'搬運＝冰河把岩石和沉積物帶著走。'}},
+  {q:{en:'Of all fresh SURFACE water, only about how much is in rivers?',zh:'所有「地表淡水」中，河流大約只佔多少？'},
+   options:[{en:'87%',zh:'87%'},{en:'50%',zh:'50%'},{en:'2%',zh:'2%'},{en:'30%',zh:'30%'}], a:2,
+   explain:{en:'87% is in lakes, 11% in swamps, and only 2% in rivers.',zh:'87% 在湖泊、11% 在沼澤，只有 2% 在河流。'}},
+  {q:{en:'A wetland is helpful because it...?',zh:'濕地有幫助，因為它……'},
+   options:[{en:'causes more floods',zh:'造成更多洪水'},{en:'stores water naturally and reduces flooding',zh:'天然儲水並減少淹水'},{en:'makes acid rain',zh:'製造酸雨'},{en:'dries out the land',zh:'讓土地變乾'}], a:1,
+   explain:{en:'Wetlands are natural water storage and reduce flooding.',zh:'濕地是天然儲水區，能減少淹水。'}}
+);
+
+CONTENT.reading.quiz.push(
+  {q:{en:'Historical fiction is...?',zh:'歷史小說是……'},
+   options:[{en:'a true news report',zh:'真實的新聞報導'},{en:'a made-up story set in a real time in the past',zh:'設定在真實過去時代的虛構故事'},{en:'a poem about nature',zh:'關於大自然的詩'},{en:'a list of facts',zh:'一串事實'}], a:1,
+   explain:{en:'It mixes a made-up story with a real historical setting.',zh:'它把虛構故事和真實歷史背景結合在一起。'}},
+  {q:{en:'Characterization is how an author shows...?',zh:'人物刻畫是作者如何呈現……'},
+   options:[{en:'the ending',zh:'結局'},{en:'what a character is like, through words, actions and thoughts',zh:'透過話語、行動、想法呈現角色是怎樣的人'},{en:'a map',zh:'地圖'},{en:'the page count',zh:'頁數'}], a:1,
+   explain:{en:'Characterization reveals a character through their words, actions, and thoughts.',zh:'人物刻畫透過角色的話語、行動和想法來揭示他。'}},
+  {q:{en:'In a story, the "conflict" is...?',zh:'故事裡的「衝突 (conflict)」是……'},
+   options:[{en:'the setting',zh:'場景'},{en:'the main problem or struggle the character faces',zh:'角色面對的主要問題或掙扎'},{en:'the title',zh:'標題'},{en:'the author\'s name',zh:'作者的名字'}], a:1,
+   explain:{en:'Conflict is the central problem that drives the plot.',zh:'衝突是推動情節的核心問題。'}},
+  {q:{en:'An expository text is writing that...?',zh:'說明文 (expository text) 是一種……'},
+   options:[{en:'tells a made-up adventure',zh:'講述虛構的冒險'},{en:'explains a topic or gives facts',zh:'解釋主題或提供事實的文章'},{en:'always rhymes',zh:'一定押韻'},{en:'argues one opinion',zh:'只主張一個意見'}], a:1,
+   explain:{en:'Expository text explains and informs with facts.',zh:'說明文用事實來解釋與告知。'}},
+  {q:{en:'"The Case of the Missing Bees" uses charts and headings to...?',zh:'《The Case of the Missing Bees》用圖表和標題來……'},
+   options:[{en:'confuse the reader',zh:'混淆讀者'},{en:'organize information and help you find it',zh:'整理資訊、幫你找到內容'},{en:'tell a joke',zh:'講笑話'},{en:'hide the facts',zh:'隱藏事實'}], a:1,
+   explain:{en:'Charts and headings are text features that organize information.',zh:'圖表和標題是用來整理資訊的文章特徵。'}},
+  {q:{en:'Showing how two things are alike AND different is called...?',zh:'呈現兩件事物「相同」和「不同」叫做……'},
+   options:[{en:'cause and effect',zh:'因果關係'},{en:'similarities and differences',zh:'異同（比較對照）'},{en:'flashback',zh:'倒敘'},{en:'theme',zh:'主題'}], a:1,
+   explain:{en:'This is comparing and contrasting — similarities and differences.',zh:'這就是比較與對照——異同。'}},
+  {q:{en:'"Bud, Not Buddy" is set during which time?',zh:'《Bud, Not Buddy》的故事設定在什麼時代？'},
+   options:[{en:'The Great Depression (1930s)',zh:'經濟大蕭條（1930 年代）'},{en:'The future',zh:'未來'},{en:'Ancient Egypt',zh:'古埃及'},{en:'The Ice Age',zh:'冰河時期'}], a:0,
+   explain:{en:'It takes place during the 1930s Great Depression in the USA.',zh:'故事發生在 1930 年代美國的經濟大蕭條時期。'}},
+  {q:{en:'Vocabulary: "adaptation" means...?',zh:'單字：「adaptation」的意思是？'},
+   options:[{en:'a body feature or behavior that helps an animal survive',zh:'幫助動物生存的身體特徵或行為'},{en:'a kind of food',zh:'一種食物'},{en:'a cold wind',zh:'冷風'},{en:'a loud noise',zh:'巨大的聲音'}], a:0,
+   explain:{en:'An adaptation helps an animal survive in its environment.',zh:'適應幫助動物在環境中生存。'}},
+  {q:{en:'Vocabulary: "hibernate" means...?',zh:'單字：「hibernate」的意思是？'},
+   options:[{en:'to run fast',zh:'跑得快'},{en:'to sleep through the winter',zh:'整個冬天都在睡（冬眠）'},{en:'to build a nest',zh:'築巢'},{en:'to swim',zh:'游泳'}], a:1,
+   explain:{en:'To hibernate is to sleep through the winter.',zh:'冬眠就是整個冬天都在睡覺。'}},
+  {q:{en:'Vocabulary: "declined" means...?',zh:'單字：「declined」的意思是？'},
+   options:[{en:'became more',zh:'變多'},{en:'became less or fewer',zh:'變少'},{en:'stayed the same',zh:'維持不變'},{en:'disappeared completely',zh:'完全消失'}], a:1,
+   explain:{en:'Declined means it became less or fewer.',zh:'declined 是指變得更少。'}},
+  {q:{en:'Vocabulary: "diversity" means...?',zh:'單字：「diversity」的意思是？'},
+   options:[{en:'having only one kind',zh:'只有一種'},{en:'having many different kinds',zh:'有許多不同種類'},{en:'being very small',zh:'非常小'},{en:'being loud',zh:'很大聲'}], a:1,
+   explain:{en:'Diversity means having many different kinds.',zh:'多樣性是指有許多不同的種類。'}},
+  {q:{en:'Vocabulary: "forage" means...?',zh:'單字：「forage」的意思是？'},
+   options:[{en:'to sleep',zh:'睡覺'},{en:'to search for food',zh:'尋找食物（覓食）'},{en:'to hide',zh:'躲藏'},{en:'to fight',zh:'打架'}], a:1,
+   explain:{en:'To forage is to search for food.',zh:'覓食就是去尋找食物。'}},
+  {q:{en:'Vocabulary: "enlisted" means...?',zh:'單字：「enlisted」的意思是？'},
+   options:[{en:'made a shopping list',zh:'寫購物清單'},{en:'joined the military',zh:'入伍（加入軍隊）'},{en:'lost something',zh:'弄丟東西'},{en:'told a story',zh:'說故事'}], a:1,
+   explain:{en:'Enlisted means joined the military.',zh:'enlisted 是指入伍、加入軍隊。'}},
+  {q:{en:'Vocabulary: "sympathy" means...?',zh:'單字：「sympathy」的意思是？'},
+   options:[{en:'a feeling of care for someone who is sad or hurt',zh:'對難過或受傷的人的關懷'},{en:'a kind of music',zh:'一種音樂'},{en:'a strong wind',zh:'強風'},{en:'a math problem',zh:'數學題'}], a:0,
+   explain:{en:'Sympathy is caring about someone who is sad or hurt.',zh:'同情是關心難過或受傷的人。'}}
+);
+
+CONTENT.grammar.quiz.push(
+  {q:{en:'Choose the possessive pronoun: "That bag is ____." (it belongs to her)',zh:'選出所有格代名詞：「That bag is ____.」（這個包包是她的）'},
+   options:[{en:'her',zh:'her'},{en:'hers',zh:'hers'},{en:'she',zh:'she'},{en:'her\'s',zh:'her\'s'}], a:1,
+   explain:{en:'A possessive pronoun stands alone: hers. (There is no "her\'s".)',zh:'所有格代名詞單獨使用：hers。（沒有 "her\'s" 這種寫法。）'}},
+  {q:{en:'Sequence adverbs put events in...?',zh:'順序副詞把事件排成……'},
+   options:[{en:'alphabetical order',zh:'字母順序'},{en:'the order they happen',zh:'發生的順序'},{en:'random order',zh:'隨機順序'},{en:'reverse order only',zh:'只有倒序'}], a:1,
+   explain:{en:'First, next, then, finally show the order events happen.',zh:'first、next、then、finally 表示事件發生的順序。'}},
+  {q:{en:'Present perfect (experience): "She ____ Japan twice."',zh:'現在完成式（經驗）：「She ____ Japan twice.」'},
+   options:[{en:'has visited',zh:'has visited'},{en:'visit',zh:'visit'},{en:'visiting',zh:'visiting'},{en:'will visit',zh:'will visit'}], a:0,
+   explain:{en:'Present perfect = has/have + past participle: has visited.',zh:'現在完成式 = has/have + 過去分詞：has visited。'}},
+  {q:{en:'Superlative of a LONG adjective: "It was the ____ flower in the garden."',zh:'長形容詞的最高級：「It was the ____ flower in the garden.」'},
+   options:[{en:'beautifulest',zh:'beautifulest'},{en:'most beautiful',zh:'most beautiful'},{en:'more beautiful',zh:'more beautiful'},{en:'beautiful',zh:'beautiful'}], a:1,
+   explain:{en:'Long adjectives use "the most": the most beautiful.',zh:'長形容詞用 the most：the most beautiful。'}},
+  {q:{en:'Participle adjective (the feeling): "After the trip, the children felt ____."',zh:'分詞形容詞（感覺）：「After the trip, the children felt ____.」'},
+   options:[{en:'tiring',zh:'tiring'},{en:'tired',zh:'tired'},{en:'tire',zh:'tire'},{en:'tires',zh:'tires'}], a:1,
+   explain:{en:'The person who feels it uses -ed: tired.',zh:'感覺到的人用 -ed：tired。'}},
+  {q:{en:'Past participle (V3) of "see"?',zh:'see 的過去分詞 (V3)？'},
+   options:[{en:'saw',zh:'saw'},{en:'seen',zh:'seen'},{en:'seeing',zh:'seeing'},{en:'sees',zh:'sees'}], a:1,
+   explain:{en:'see → saw → seen. The V3 is "seen".',zh:'see → saw → seen。過去分詞是 seen。'}},
+  {q:{en:'Possessive noun (singular): "the tail belonging to the dog" = "the ____ tail"',zh:'所有格名詞（單數）：「狗的尾巴」= the ____ tail'},
+   options:[{en:'dogs',zh:'dogs'},{en:'dog\'s',zh:'dog\'s'},{en:'dogs\'',zh:'dogs\''},{en:'dog',zh:'dog'}], a:1,
+   explain:{en:'One dog → add \'s → dog\'s tail.',zh:'一隻狗 → 加 \'s → dog\'s tail。'}},
+  {q:{en:'Which sentence is in the SIMPLE PAST?',zh:'哪一句是「過去簡單式」？'},
+   options:[{en:'I am playing',zh:'I am playing'},{en:'I was playing',zh:'I was playing'},{en:'I played',zh:'I played'},{en:'I will play',zh:'I will play'}], a:2,
+   explain:{en:'Simple past = a finished past action: "I played".',zh:'過去簡單式＝已完成的過去動作：I played。'}},
+  {q:{en:'First conditional: "If you ____ hard, you will succeed."',zh:'第一條件句：「If you ____ hard, you will succeed.」'},
+   options:[{en:'works',zh:'works'},{en:'work',zh:'work'},{en:'worked',zh:'worked'},{en:'working',zh:'working'}], a:1,
+   explain:{en:'If + present simple. With "you" the verb is "work".',zh:'If + 現在簡單式。主詞是 you 時動詞用 work。'}},
+  {q:{en:'Past perfect shows the action that happened...?',zh:'過去完成式表示哪一個動作？'},
+   options:[{en:'in the future',zh:'未來發生的'},{en:'first (before another past action)',zh:'先發生的（在另一個過去動作之前）'},{en:'right now',zh:'現在'},{en:'never',zh:'從未'}], a:1,
+   explain:{en:'Past perfect (had + V3) marks the earlier of two past actions.',zh:'過去完成式 (had + V3) 標示兩個過去動作中先發生的那個。'}}
+);
+
+CONTENT.math.quiz.push(
+  {q:{en:'How many seconds are in 1 minute?',zh:'1 分鐘有幾秒？'},
+   options:[{en:'10',zh:'10'},{en:'24',zh:'24'},{en:'60',zh:'60'},{en:'100',zh:'100'}], a:2,
+   explain:{en:'1 minute = 60 seconds.',zh:'1 分鐘 = 60 秒。'}},
+  {q:{en:'How many hours are in 1 day?',zh:'1 天有幾小時？'},
+   options:[{en:'12',zh:'12'},{en:'24',zh:'24'},{en:'60',zh:'60'},{en:'7',zh:'7'}], a:1,
+   explain:{en:'1 day = 24 hours.',zh:'1 天 = 24 小時。'}},
+  {q:{en:'Write 1/2 as a percent.',zh:'把 1/2 寫成百分比。'},
+   options:[{en:'12%',zh:'12%'},{en:'20%',zh:'20%'},{en:'50%',zh:'50%'},{en:'100%',zh:'100%'}], a:2,
+   explain:{en:'1 ÷ 2 = 0.5 = 50%.',zh:'1 ÷ 2 = 0.5 = 50%。'}},
+  {q:{en:'Write 0.5 as a percent.',zh:'把 0.5 寫成百分比。'},
+   options:[{en:'5%',zh:'5%'},{en:'50%',zh:'50%'},{en:'0.5%',zh:'0.5%'},{en:'500%',zh:'500%'}], a:1,
+   explain:{en:'Move the decimal 2 places right: 0.5 → 50%.',zh:'小數點右移 2 位：0.5 → 50%。'}},
+  {q:{en:'Write 25% as a decimal.',zh:'把 25% 寫成小數。'},
+   options:[{en:'25',zh:'25'},{en:'2.5',zh:'2.5'},{en:'0.25',zh:'0.25'},{en:'0.025',zh:'0.025'}], a:2,
+   explain:{en:'Move the decimal 2 places left: 25% → 0.25.',zh:'小數點左移 2 位：25% → 0.25。'}},
+  {q:{en:'How many lines of symmetry does a (non-square) RECTANGLE have?',zh:'長方形（非正方形）有幾條對稱線？'},
+   options:[{en:'1',zh:'1'},{en:'2',zh:'2'},{en:'4',zh:'4'},{en:'0',zh:'0'}], a:1,
+   explain:{en:'A rectangle has 2 lines of symmetry.',zh:'長方形有 2 條對稱線。'}},
+  {q:{en:'How many lines of symmetry does an EQUILATERAL triangle have?',zh:'正三角形有幾條對稱線？'},
+   options:[{en:'0',zh:'0'},{en:'1',zh:'1'},{en:'3',zh:'3'},{en:'6',zh:'6'}], a:2,
+   explain:{en:'An equilateral triangle has 3 lines of symmetry.',zh:'正三角形有 3 條對稱線。'}},
+  {q:{en:'3,000 mL = how many liters (L)?',zh:'3,000 mL = 幾公升 (L)？'},
+   options:[{en:'3',zh:'3'},{en:'30',zh:'30'},{en:'300',zh:'300'},{en:'0.3',zh:'0.3'}], a:0,
+   explain:{en:'1,000 mL = 1 L, so 3,000 mL = 3 L.',zh:'1,000 mL = 1 L，所以 3,000 mL = 3 L。'}},
+  {q:{en:'What is the volume of a cube with side length 4?',zh:'邊長 4 的正方體體積是多少？'},
+   options:[{en:'12',zh:'12'},{en:'16',zh:'16'},{en:'64',zh:'64'},{en:'8',zh:'8'}], a:2,
+   explain:{en:'Volume = 4 × 4 × 4 = 64 cubic units.',zh:'體積 = 4 × 4 × 4 = 64 立方單位。'}},
+  {q:{en:'The flat side faces of a prism (not the top or bottom) are called...?',zh:'長方體旁邊的平面（不是上下面）叫做……'},
+   options:[{en:'nets',zh:'展開圖'},{en:'lateral faces',zh:'側面'},{en:'edges',zh:'邊'},{en:'vertices',zh:'頂點'}], a:1,
+   explain:{en:'The side faces are called lateral faces.',zh:'旁邊的面叫做側面 (lateral faces)。'}},
+  {q:{en:'A line of symmetry can be horizontal, vertical, or...?',zh:'對稱線可以是水平、垂直，或……？'},
+   options:[{en:'round',zh:'圓的'},{en:'diagonal',zh:'斜的（對角）'},{en:'dotted',zh:'虛線的'},{en:'invisible',zh:'看不見的'}], a:1,
+   explain:{en:'Lines of symmetry can be horizontal, vertical, or diagonal.',zh:'對稱線可以是水平、垂直或斜的（對角）。'}},
+  {q:{en:'How many cubic centimeters (cm³) are in 1 milliliter (mL)?',zh:'1 毫升 (mL) 等於幾立方公分 (cm³)？'},
+   options:[{en:'1',zh:'1'},{en:'10',zh:'10'},{en:'100',zh:'100'},{en:'1000',zh:'1000'}], a:0,
+   explain:{en:'1 cm³ = 1 mL.',zh:'1 cm³ = 1 mL。'}}
+);
+/* tag every question added in THIS block as new */
+Object.keys(_baseQ).forEach(function(k){ CONTENT[k].quiz.forEach(function(q,i){ if(i>=_baseQ[k]) q.isNew=true; }); });
 </script>
 <!-- DATA-INSERT -->
 <script>
