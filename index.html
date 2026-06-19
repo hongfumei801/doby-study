@@ -125,6 +125,9 @@
   .q{padding:12px 0; border-bottom:1px dashed var(--line)}
   .q:last-of-type{border-bottom:none}
   .qtext{font-weight:600; margin-bottom:8px}
+  /* key-point highlighter (looks like a yellow highlighter pen) */
+  mark.key{background:linear-gradient(transparent 58%, #ffe96b 58%); color:inherit; padding:0 1px; border-radius:2px; font-weight:700}
+  .zh.show mark.key{background:linear-gradient(transparent 58%, #ffd24d 58%)}
   .newbadge{display:inline-block; background:linear-gradient(135deg,#ff6b9d,#ff9a6b); color:#fff; font-size:.68rem; font-weight:800; padding:2px 9px; border-radius:999px; margin-right:7px; vertical-align:middle; letter-spacing:.4px; box-shadow:0 1px 5px rgba(255,107,157,.5)}
   .opts{display:flex; flex-direction:column; gap:8px}
   .opt{
@@ -296,14 +299,47 @@ function speakEl(el){ if(el) speak(el.getAttribute('data-say')); }
 function speakBlock(btn){ const p=btn.parentElement; if(!p) return; const en=p.querySelector('.en'); if(en) speak(en.textContent); }
 function spk(){ return '<button class="spk" type="button" title="聽發音 / read aloud" onclick="event.stopPropagation();speakBlock(this)">🔊</button>'; }
 
+/* ---- key-point highlighting (auto-marks important terms in 重點整理) ---- */
+let CUR_KEY='';
+const HL = {
+  science:{
+    en:['hydrosphere','fresh surface water','salt water','freshwater','glaciers','glacier','ice caps','groundwater','aquifers','aquifer','reservoirs','reservoir','dams','dam','standing water','running water','erosion','deposition','sediment','delta','alluvial fan','floodplain','floods','flood','hurricane','storm surge','wetland','moraine','terminus','oil spill','algal bloom','acid rain','conservation','natural resources','ecosystem','Reduce','Reuse','Recycle','Safe Water Drinking Act','97%','3%','1974'],
+    zh:['水圈','地表淡水','鹹水','淡水','冰河','冰帽','地下水','含水層','水庫','水壩','靜止水','流動水','侵蝕','沉積物','沉積','三角洲','沖積扇','氾濫平原','洪水','颶風','風暴潮','濕地','冰磧','漏油','藻華','酸雨','保育','天然資源','生態系','安全飲用水法','97%','3%']
+  },
+  reading:{
+    en:['historical fiction','expository text','expository','argumentative text','argumentative','characterization','conflict','flashback','theme','author’s perspective','author\'s perspective','cause and effect','idioms','idiom','similarities and differences','charts and headings'],
+    zh:['歷史小說','說明文','論說文','人物刻畫','情節','衝突','倒敘','主題','作者觀點','因果關係','慣用語','異同','圖表與標題','圖表和標題']
+  },
+  grammar:{
+    en:['sequence adverbs','first conditional','possessive pronouns','possessive pronoun','possessives','possessive','simple past','past continuous','past perfect','present perfect','superlative adjectives','superlatives','superlative','participles','participle'],
+    zh:['順序副詞','第一條件句','所有格代名詞','所有格','過去簡單式','過去進行式','過去完成式','現在完成式','最高級','分詞']
+  },
+  math:{
+    en:['line of symmetry','symmetry','surface area','lateral face','net','volume','capacity','percentage','percent','cubic centimeter','cubic meter','milliliter','liter','horizontal','vertical','diagonal'],
+    zh:['對稱線','對稱','表面積','側面','展開圖','體積','容量','百分比','立方公分','立方公尺','毫升','公升','水平','垂直','對角']
+  }
+};
+function escapeRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function hl(text, lang, key){
+  try{
+    const L = HL[key] && HL[key][lang];
+    if(!L || !L.length || !text) return text;
+    const body = L.slice().sort((a,b)=>b.length-a.length).map(escapeRe).join('|');
+    const re = (lang==='en')
+      ? new RegExp('(?<![A-Za-z])('+body+')(?![A-Za-z])','gi')
+      : new RegExp('('+body+')','g');
+    return text.replace(re, '<mark class="key">$1<\/mark>');
+  }catch(e){ return text; }   // degrade gracefully on old browsers (no lookbehind)
+}
+
 /* ---- block rendering ---- */
 function renderBlock(b){
   switch(b.type){
-    case 'fact':    return `<p class="fact">${bi(b.en,b.zh)}${spk()}</p>`;
-    case 'note':    return `<div class="note">${bi(b.en,b.zh)}${spk()}</div>`;
-    case 'tip':     return `<div class="tip">💡 ${bi(b.en,b.zh)}${spk()}</div>`;
-    case 'example': return `<div class="example">📌 ${bi(b.en,b.zh)}${spk()}</div>`;
-    case 'list':    return '<ul class="bilist">'+b.items.map(it=>`<li>${bi(it.en,it.zh)}${spk()}</li>`).join('')+'</ul>';
+    case 'fact':    return `<p class="fact">${bi(hl(b.en,'en',CUR_KEY),hl(b.zh,'zh',CUR_KEY))}${spk()}</p>`;
+    case 'note':    return `<div class="note">${bi(hl(b.en,'en',CUR_KEY),hl(b.zh,'zh',CUR_KEY))}${spk()}</div>`;
+    case 'tip':     return `<div class="tip">💡 ${bi(hl(b.en,'en',CUR_KEY),hl(b.zh,'zh',CUR_KEY))}${spk()}</div>`;
+    case 'example': return `<div class="example">📌 ${bi(hl(b.en,'en',CUR_KEY),hl(b.zh,'zh',CUR_KEY))}${spk()}</div>`;
+    case 'list':    return '<ul class="bilist">'+b.items.map(it=>`<li>${bi(hl(it.en,'en',CUR_KEY),hl(it.zh,'zh',CUR_KEY))}${spk()}</li>`).join('')+'</ul>';
     case 'table':   return renderTable(b);
     case 'html':    return b.html;
     case 'subjectcards': return renderSubjectCards();
@@ -312,7 +348,7 @@ function renderBlock(b){
 }
 function renderTable(b){
   let h='<div class="tablewrap"><table><thead><tr>'+b.cols.map(c=>`<th>${bi(c.en,c.zh)}${spk()}</th>`).join('')+'</tr></thead><tbody>';
-  b.rows.forEach(r=>{h+='<tr>'+r.map(c=>`<td>${bi(c.en,c.zh)}${spk()}</td>`).join('')+'</tr>';});
+  b.rows.forEach(r=>{h+='<tr>'+r.map(c=>`<td>${bi(hl(c.en,'en',CUR_KEY),hl(c.zh,'zh',CUR_KEY))}${spk()}</td>`).join('')+'</tr>';});
   return h+'</tbody></table></div>';
 }
 function renderVocab(arr){
@@ -332,6 +368,7 @@ function renderSubjectCards(){
 function renderSubject(key){
   const c=CONTENT[key];
   if(!c) return '<div class="card">內容載入中… (還沒做好這一科)</div>';
+  CUR_KEY=key;   // so renderBlock/renderTable highlight this subject's key terms
   let h='<section class="subject">';
   h+=`<div class="subhead"><h2>${c.emoji||''} ${bi(c.title.en,c.title.zh)}${spk()}</h2>`;
   if(c.intro) h+=`<p class="intro">${bi(c.intro.en,c.intro.zh)}${spk()}</p>`;
