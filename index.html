@@ -94,6 +94,8 @@
   }
   .spk:hover{filter:brightness(1.08)}
   .spk:active{transform:scale(.9)}
+  th .spk,td .spk{width:19px; height:19px; font-size:.66rem; margin-left:4px}
+  th .spk{background:#fff; color:var(--p1)}
   .vterm{cursor:pointer}
   .vterm:hover{text-decoration:underline}
 
@@ -309,12 +311,12 @@ function renderBlock(b){
   }
 }
 function renderTable(b){
-  let h='<div class="tablewrap"><table><thead><tr>'+b.cols.map(c=>`<th>${bi(c.en,c.zh)}</th>`).join('')+'</tr></thead><tbody>';
-  b.rows.forEach(r=>{h+='<tr>'+r.map(c=>`<td>${bi(c.en,c.zh)}</td>`).join('')+'</tr>';});
+  let h='<div class="tablewrap"><table><thead><tr>'+b.cols.map(c=>`<th>${bi(c.en,c.zh)}${spk()}</th>`).join('')+'</tr></thead><tbody>';
+  b.rows.forEach(r=>{h+='<tr>'+r.map(c=>`<td>${bi(c.en,c.zh)}${spk()}</td>`).join('')+'</tr>';});
   return h+'</tbody></table></div>';
 }
 function renderVocab(arr){
-  return '<div class="vocabgrid">'+arr.map(v=>`<div class="vcard"><div><span class="vterm" data-say="${v.term}" title="點一下聽發音" onclick="speakEl(this)">${v.term}</span><button class="spk" type="button" title="聽發音" data-say="${v.term}" onclick="speakEl(this)">🔊</button></div><div class="vdef">${bi(v.en,v.zh)}</div></div>`).join('')+'</div>';
+  return '<div class="vocabgrid">'+arr.map(v=>`<div class="vcard"><div><span class="vterm" data-say="${v.term}" title="點一下聽發音" onclick="speakEl(this)">${v.term}</span><button class="spk" type="button" title="聽發音" data-say="${v.term}" onclick="speakEl(this)">🔊</button></div><div class="vdef">${bi(v.en,v.zh)}${spk()}</div></div>`).join('')+'</div>';
 }
 function renderSubjectCards(){
   const cards=[
@@ -331,7 +333,7 @@ function renderSubject(key){
   const c=CONTENT[key];
   if(!c) return '<div class="card">內容載入中… (還沒做好這一科)</div>';
   let h='<section class="subject">';
-  h+=`<div class="subhead"><h2>${c.emoji||''} ${bi(c.title.en,c.title.zh)}</h2>`;
+  h+=`<div class="subhead"><h2>${c.emoji||''} ${bi(c.title.en,c.title.zh)}${spk()}</h2>`;
   if(c.intro) h+=`<p class="intro">${bi(c.intro.en,c.intro.zh)}${spk()}</p>`;
   h+='</div>';
   (c.sections||[]).forEach(s=>{
@@ -391,7 +393,7 @@ function buildQuiz(el, qs, key){
     <div class="q" id="${key}-q${i}">
       <div class="qtext">Q${i+1}. ${q.isNew?'<span class="newbadge">🆕 NEW 新</span>':''}${bi(q.q.en,q.q.zh)}${spk()}</div>
       <div class="opts">${q.options.map((o,j)=>`<div class="opt" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}${spk()}</div>`).join('')}</div>
-      <div class="explain" hidden>${q.explain?bi('💡 '+q.explain.en,'💡 '+q.explain.zh):''}</div>
+      <div class="explain" hidden>${q.explain?bi('💡 '+q.explain.en,'💡 '+q.explain.zh)+spk():''}</div>
     </div>`).join('')
     + `<div class="scorebar" id="score-${key}">${bi('Score','得分')}: 0 / ${qs.length}</div>`
     + `<button class="btn reset" onclick="show(activeKey)">🔄 ${bi('Try again','重新測驗')}</button>`;
@@ -617,9 +619,9 @@ CONTENT.science = {
             <text x="60" y="64" text-anchor="middle" font-size="11" font-weight="700" fill="#2a8cff">H₂O</text>
           </svg>
           <div style="font-size:.95rem">
-            <div><b style="color:#2a8cff">■ 97%</b> ${bi('Salt water (oceans)','鹹水（海洋）')}</div>
-            <div><b style="color:#34b87a">■ 3%</b> ${bi('Freshwater','淡水')}</div>
-            <div style="color:var(--muted);margin-top:4px">${bi('Less than 1% is fresh surface water: 87% lakes, 11% swamps, only 2% rivers.','不到 1% 是地表淡水：87% 在湖泊、11% 在沼澤、只有 2% 在河流。')}</div>
+            <div><b style="color:#2a8cff">■ 97%</b> ${bi('Salt water (oceans)','鹹水（海洋）')}${spk()}</div>
+            <div><b style="color:#34b87a">■ 3%</b> ${bi('Freshwater','淡水')}${spk()}</div>
+            <div style="color:var(--muted);margin-top:4px">${bi('Less than 1% is fresh surface water: 87% lakes, 11% swamps, only 2% rivers.','不到 1% 是地表淡水：87% 在湖泊、11% 在沼澤、只有 2% 在河流。')}${spk()}</div>
           </div></div>`},
        {type:'table',
         cols:[{en:'Type',zh:'種類'},{en:'Description',zh:'說明'}],
@@ -1083,7 +1085,7 @@ CONTENT.math = {
              <rect x="210" y="50" width="28" height="60"/>
            </g>
          </svg>
-         <div style="font-size:.88rem;color:var(--muted)">${bi('A net of a rectangular prism (6 faces unfolded)','長方體的展開圖（6 個面攤平）')}</div>
+         <div style="font-size:.88rem;color:var(--muted)">${bi('A net of a rectangular prism (6 faces unfolded)','長方體的展開圖（6 個面攤平）')}${spk()}</div>
        </div>`},
        {type:'example', en:'Box 4 × 3 × 2: SA = 2(l×w + l×h + w×h) = 2(4×3 + 4×2 + 3×2) = 2(12 + 8 + 6) = 2 × 26 = 52 square units.', zh:'箱子 4 × 3 × 2：表面積 = 2(長×寬 + 長×高 + 寬×高) = 2(4×3 + 4×2 + 3×2) = 2(12 + 8 + 6) = 2 × 26 = 52 平方單位。'},
      ]},
