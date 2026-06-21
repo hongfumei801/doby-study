@@ -139,6 +139,7 @@
   mark.key{background:linear-gradient(transparent 58%, #ffe96b 58%); color:inherit; padding:0 1px; border-radius:2px; font-weight:700}
   .zh.show mark.key{background:linear-gradient(transparent 58%, #ffd24d 58%)}
   .newbadge{display:inline-block; background:linear-gradient(135deg,#ff6b9d,#ff9a6b); color:#fff; font-size:.68rem; font-weight:800; padding:2px 9px; border-radius:999px; margin-right:7px; vertical-align:middle; letter-spacing:.4px; box-shadow:0 1px 5px rgba(255,107,157,.5)}
+  .advbadge{display:inline-block; background:linear-gradient(135deg,#7c5cff,#22c1c3); color:#fff; font-size:.68rem; font-weight:800; padding:2px 9px; border-radius:999px; margin-right:7px; vertical-align:middle; letter-spacing:.4px; box-shadow:0 1px 5px rgba(124,92,255,.5)}
   .opts{display:flex; flex-direction:column; gap:8px}
   .opt{
     background:#fff; border:2px solid var(--line); border-radius:12px;
@@ -443,7 +444,7 @@ function buildQuiz(el, qs, key){
     `<div class="quiznav"><span class="kbdhint">⌨️ ↑↓←→ 移動到題目/選項 · 按 1–4 或 Enter 作答</span><span class="qpos" id="qpos-${key}">第 1 / ${qs.length} 題</span></div>`
     + qs.map((q,i)=>`
     <div class="q${i===0?' active':''}" id="${key}-q${i}" tabindex="0" onclick="quizFocus('${key}',${i})">
-      <div class="qtext">Q${i+1}. ${q.isNew?'<span class="newbadge">🆕 NEW 新</span>':''}${bi(q.q.en,q.q.zh)}${spk()}</div>
+      <div class="qtext">Q${i+1}. ${q.adv?'<span class="advbadge">⭐ 進階 ADV</span>':''}${q.isNew?'<span class="newbadge">🆕 NEW 新</span>':''}${bi(q.q.en,q.q.zh)}${spk()}</div>
       <div class="opts">${q.options.map((o,j)=>`<div class="opt" tabindex="0" role="button" onclick="answerQ('${key}',${i},${j})">${String.fromCharCode(65+j)}. ${bi(o.en,o.zh)}${spk()}</div>`).join('')}</div>
       <div class="explain" hidden>${q.explain?bi('💡 '+q.explain.en,'💡 '+q.explain.zh)+spk():''}</div>
       ${i<qs.length-1?`<button class="qnav" onclick="event.stopPropagation();quizActivate('${key}',${i+1})">下一題 ⬇</button>`:''}
@@ -1120,7 +1121,7 @@ CONTENT.grammar = {
        {q:{en:'Present perfect: "She has ____ (finish) her work."',zh:'現在完成式：She has ____ (finish) her work.'}, ans:'finished'},
        {q:{en:'Superlative of "big"?',zh:'big 的最高級？'}, ans:'biggest', accept:['the biggest']},
        {q:{en:'Superlative of "good"?',zh:'good 的最高級？'}, ans:'best', accept:['the best']},
-       {q:{en:'Possessive pronoun meaning "belonging to me"?',zh:'表示「屬於我」的所有格代名詞？'}, ans:'mine'},
+       {q:{en:'Possessive pronoun meaning "belonging to us"?',zh:'表示「屬於我們」的所有格代名詞？'}, ans:'ours'},
        {q:{en:'Possessive pronoun meaning "belonging to them"?',zh:'表示「屬於他們」的所有格代名詞？'}, ans:'theirs'},
      ]},
   ],
@@ -1251,19 +1252,19 @@ CONTENT.math = {
      ]},
     {title:{en:'Percentage Practice (write the number)', zh:'百分比練習（寫數字）'},
      questions:[
-       {q:{en:'Write 1/2 as a percent.',zh:'把 1/2 寫成百分比。'}, ans:'50', accept:['50%']},
-       {q:{en:'Write 3/4 as a percent.',zh:'把 3/4 寫成百分比。'}, ans:'75', accept:['75%']},
-       {q:{en:'Write 0.25 as a percent.',zh:'把 0.25 寫成百分比。'}, ans:'25', accept:['25%']},
-       {q:{en:'Write 60% as a decimal.',zh:'把 60% 寫成小數。'}, ans:'0.6', accept:['.6']},
        {q:{en:'Write 1/4 as a percent.',zh:'把 1/4 寫成百分比。'}, ans:'25', accept:['25%']},
+       {q:{en:'Write 4/5 as a percent.',zh:'把 4/5 寫成百分比。'}, ans:'80', accept:['80%']},
+       {q:{en:'Write 0.9 as a percent.',zh:'把 0.9 寫成百分比。'}, ans:'90', accept:['90%']},
+       {q:{en:'Write 40% as a decimal.',zh:'把 40% 寫成小數。'}, ans:'0.4', accept:['.4']},
+       {q:{en:'Write 3/10 as a percent.',zh:'把 3/10 寫成百分比。'}, ans:'30', accept:['30%']},
      ]},
     {title:{en:'Surface Area & Volume Practice', zh:'表面積與體積練習'},
      questions:[
-       {q:{en:'How many faces does a rectangular prism have?',zh:'長方體有幾個面？'}, ans:'6'},
-       {q:{en:'Volume of a box 2 × 3 × 4 (cubic units)?',zh:'箱子 2 × 3 × 4 的體積（立方單位）？'}, ans:'24'},
-       {q:{en:'Surface area of a box 4 × 3 × 2? (use 2(lw+lh+wh))',zh:'箱子 4 × 3 × 2 的表面積？（用 2(lw+lh+wh)）'}, ans:'52'},
        {q:{en:'Volume of a cube with side 5?',zh:'邊長 5 的正方體體積？'}, ans:'125'},
-       {q:{en:'How many lines of symmetry does a square have?',zh:'正方形有幾條對稱線？'}, ans:'4'},
+       {q:{en:'Volume of a box 5 × 2 × 2?',zh:'箱子 5 × 2 × 2 的體積？'}, ans:'20'},
+       {q:{en:'Surface area of a box 2 × 2 × 3? (use 2(lw+lh+wh))',zh:'箱子 2 × 2 × 3 的表面積？（用 2(lw+lh+wh)）'}, ans:'32'},
+       {q:{en:'Volume of a box 3 × 3 × 2?',zh:'箱子 3 × 3 × 2 的體積？'}, ans:'18'},
+       {q:{en:'How many lines of symmetry does the letter H have?',zh:'字母 H 有幾條對稱線？'}, ans:'2'},
      ]},
   ],
   quiz:[
@@ -1536,8 +1537,81 @@ CONTENT.reading.quiz.push(
    options:[{en:'makes things colder',zh:'讓東西更冷'},{en:'keeps heat in and protects from the cold',zh:'把熱留住、抵抗寒冷'},{en:'makes a loud noise',zh:'發出巨大聲響'},{en:'cleans water',zh:'淨化水'}], a:1,
    explain:{en:'insulates = keeps heat in and protects from the cold.',zh:'insulates＝隔熱、保溫。'}}
 );
-/* tag every question added in THIS block as new */
-Object.keys(_baseQ).forEach(function(k){ CONTENT[k].quiz.forEach(function(q,i){ if(i>=_baseQ[k]) q.isNew=true; }); });
+
+/* --- ADVANCED questions (in exam scope), badged ⭐ 進階 --- */
+CONTENT.science.quiz.push(
+  {adv:true,q:{en:'Of ALL the water on Earth, about how much is fresh SURFACE water (lakes & rivers you can easily use)?',zh:'地球上「所有」的水中，大約有多少是可輕易使用的「地表淡水」（湖泊與河流）？'},
+   options:[{en:'97%',zh:'97%'},{en:'About half',zh:'大約一半'},{en:'About 30%',zh:'大約 30%'},{en:'Less than 1%',zh:'不到 1%'}], a:3,
+   explain:{en:'97% is salt water, 3% is freshwater, and less than 1% is fresh surface water.',zh:'97% 是鹹水、3% 是淡水，地表淡水不到 1%。'}},
+  {adv:true,q:{en:'A river slows down on a flat area. What will it most likely do to the sand it carries?',zh:'河流在平坦處變慢，最可能把攜帶的沙子怎麼樣？'},
+   options:[{en:'Drop it — deposition',zh:'放下它——沉積'},{en:'Speed it up',zh:'讓它加速'},{en:'Turn it into salt water',zh:'把它變成鹹水'},{en:'Make it evaporate',zh:'讓它蒸發'}], a:0,
+   explain:{en:'Slow-moving water drops its sediment — that is deposition.',zh:'流速慢的水會放下沉積物——這就是沉積。'}},
+  {adv:true,q:{en:'Fertilizer runs into a pond and algae grow very fast. What happens next?',zh:'肥料流進池塘、藻類快速大量繁殖，接下來會怎樣？'},
+   options:[{en:'The water gains more oxygen',zh:'水中氧氣增加'},{en:'The algae use up oxygen and harm fish',zh:'藻類耗掉氧氣、危害魚類'},{en:'The pond freezes',zh:'池塘結冰'},{en:'Nothing changes',zh:'沒有變化'}], a:1,
+   explain:{en:'An algal bloom uses up oxygen as it decays, harming aquatic life.',zh:'藻華腐爛時耗盡氧氣，危害水生生物。'}},
+  {adv:true,q:{en:'Where a river enters the ocean and drops sediment in a fan or triangle shape, it forms a…',zh:'河流注入海洋、以扇形或三角形放下沉積物的地方，會形成……'},
+   options:[{en:'glacier',zh:'冰河'},{en:'delta',zh:'三角洲'},{en:'hurricane',zh:'颶風'},{en:'wetland',zh:'濕地'}], a:1,
+   explain:{en:'Sediment dropped where a river meets the ocean builds a delta.',zh:'河流入海處堆積的沉積物形成三角洲。'}},
+  {adv:true,q:{en:'Which action is an example of REDUCE (using less water)?',zh:'哪個行為是「Reduce 減少」（用更少的水）的例子？'},
+   options:[{en:'Collecting rainwater to use again',zh:'收集雨水再利用'},{en:'Cleaning used water at a treatment plant',zh:'在淨水廠處理用過的水'},{en:'Turning off the tap while brushing teeth',zh:'刷牙時關掉水龍頭'},{en:'Using cooking water for plants',zh:'用煮菜的水澆花'}], a:2,
+   explain:{en:'Reduce = use less (turn off taps). The others are Reuse or Recycle.',zh:'Reduce＝用更少（關水龍頭）。其他是 Reuse 或 Recycle。'}}
+);
+CONTENT.reading.quiz.push(
+  {adv:true,q:{en:'An author writes: "Everyone should help save the bees before it is too late!" This shows the author\'s…',zh:'作者寫：「大家都該在來不及前幫忙拯救蜜蜂！」這顯示作者的……'},
+   options:[{en:'setting',zh:'場景'},{en:'opinion / perspective',zh:'意見／觀點'},{en:'page number',zh:'頁碼'},{en:'vocabulary list',zh:'單字表'}], a:1,
+   explain:{en:'A strong opinion telling readers what to do shows the author\'s perspective.',zh:'強烈、告訴讀者該怎麼做的意見，顯示作者觀點。'}},
+  {adv:true,q:{en:'In the middle of a battle scene, the story shows the soldier as a young boy at home, then returns. This is a…',zh:'在戰鬥場景中，故事突然呈現士兵小時候在家的樣子，再回到戰場。這是……'},
+   options:[{en:'flashback',zh:'倒敘'},{en:'chart',zh:'圖表'},{en:'glossary',zh:'字彙表'},{en:'map',zh:'地圖'}], a:0,
+   explain:{en:'Jumping back to an earlier time is a flashback.',zh:'跳回較早時間就是倒敘。'}},
+  {adv:true,q:{en:'Someone says "Break a leg!" to an actor before a show. They really mean…',zh:'有人在表演前對演員說「Break a leg!」，真正的意思是……'},
+   options:[{en:'Please get hurt',zh:'請受傷'},{en:'Good luck!',zh:'祝你好運！'},{en:'Run away',zh:'快逃'},{en:'Sit down',zh:'坐下'}], a:1,
+   explain:{en:'"Break a leg" is an idiom meaning "good luck".',zh:'「Break a leg」是慣用語，意思是「祝你好運」。'}},
+  {adv:true,q:{en:'In "The Unbreakable Code," the Navajo language helped win the war. A good THEME is…',zh:'在《The Unbreakable Code》中，納瓦霍語幫忙贏得戰爭。好的「主題」是……'},
+   options:[{en:'War is fun',zh:'戰爭很好玩'},{en:'People\'s differences and culture can be a great strength',zh:'人的不同與文化可以是強大的力量'},{en:'Codes are easy to break',zh:'密碼很容易破解'},{en:'Never join the army',zh:'絕不要從軍'}], a:1,
+   explain:{en:'The theme is the big lesson: diversity and culture can be a strength.',zh:'主題是核心道理：多樣性與文化能成為力量。'}},
+  {adv:true,q:{en:'One text tells an exciting story about Arctic foxes; another lists facts about how they stay warm. Studying how the two are alike and different is…',zh:'一篇講北極狐的精彩故事，另一篇列出牠們如何保暖的事實。研究兩者的異同叫做……'},
+   options:[{en:'a flashback',zh:'倒敘'},{en:'comparing similarities and differences',zh:'比較異同'},{en:'an idiom',zh:'慣用語'},{en:'a rhyme',zh:'押韻'}], a:1,
+   explain:{en:'Looking at how two things are alike and different = similarities and differences.',zh:'看兩件事的相同與不同＝異同（比較對照）。'}}
+);
+CONTENT.grammar.quiz.push(
+  {adv:true,q:{en:'Choose the correct past perfect: "By the time we got to the station, the train ____."',zh:'選出正確的過去完成式：「By the time we got to the station, the train ____.」'},
+   options:[{en:'leaves',zh:'leaves'},{en:'had already left',zh:'had already left'},{en:'is leaving',zh:'is leaving'},{en:'will leave',zh:'will leave'}], a:1,
+   explain:{en:'The train left BEFORE we arrived → past perfect "had already left".',zh:'火車在我們到達「之前」就離開了 → 過去完成式 had already left。'}},
+  {adv:true,q:{en:'"After she had finished her homework, she watched TV." Which happened FIRST?',zh:'「After she had finished her homework, she watched TV.」哪件事「先」發生？'},
+   options:[{en:'watching TV',zh:'看電視'},{en:'finishing homework',zh:'寫完功課'},{en:'they happened together',zh:'同時發生'},{en:'neither happened',zh:'都沒發生'}], a:1,
+   explain:{en:'Past perfect (had finished) marks the earlier action.',zh:'過去完成式 (had finished) 標示先發生的動作。'}},
+  {adv:true,q:{en:'Present perfect with "since": "I ____ in this town since 2019."',zh:'用 since 的現在完成式：「I ____ in this town since 2019.」'},
+   options:[{en:'live',zh:'live'},{en:'have lived',zh:'have lived'},{en:'was living',zh:'was living'},{en:'will live',zh:'will live'}], a:1,
+   explain:{en:'"since" + present perfect (have lived) connects the past to now.',zh:'since + 現在完成式 (have lived)，把過去連到現在。'}},
+  {adv:true,q:{en:'Superlative: "This is the ____ story in the whole book." (interesting)',zh:'最高級：「This is the ____ story in the whole book.」(interesting)'},
+   options:[{en:'interestingest',zh:'interestingest'},{en:'more interesting',zh:'more interesting'},{en:'most interesting',zh:'most interesting'},{en:'interesting',zh:'interesting'}], a:2,
+   explain:{en:'A long adjective uses "the most": the most interesting.',zh:'長形容詞用 the most：the most interesting。'}},
+  {adv:true,q:{en:'Participle as adjective: "He swept up the ____ glass." (break)',zh:'分詞當形容詞：「He swept up the ____ glass.」(break)'},
+   options:[{en:'breaking',zh:'breaking'},{en:'broke',zh:'broke'},{en:'broken',zh:'broken'},{en:'breaks',zh:'breaks'}], a:2,
+   explain:{en:'The past participle used as an adjective: broken glass.',zh:'過去分詞當形容詞：broken glass（破掉的玻璃）。'}}
+);
+CONTENT.math.quiz.push(
+  {adv:true,q:{en:'A movie is 1 hour 45 minutes long. How many MINUTES is that?',zh:'一部電影長 1 小時 45 分鐘。換算成「分鐘」是多少？'},
+   options:[{en:'145',zh:'145'},{en:'105',zh:'105'},{en:'60',zh:'60'},{en:'175',zh:'175'}], a:1,
+   explain:{en:'1 hour = 60 min, so 60 + 45 = 105 minutes.',zh:'1 小時 = 60 分，所以 60 + 45 = 105 分鐘。'}},
+  {adv:true,q:{en:'A bottle holds 2.5 liters. How many milliliters is that?',zh:'一瓶裝 2.5 公升。等於幾毫升？'},
+   options:[{en:'25 mL',zh:'25 mL'},{en:'250 mL',zh:'250 mL'},{en:'2,500 mL',zh:'2,500 mL'},{en:'25,000 mL',zh:'25,000 mL'}], a:2,
+   explain:{en:'1 L = 1,000 mL, so 2.5 × 1,000 = 2,500 mL.',zh:'1 L = 1,000 mL，所以 2.5 × 1,000 = 2,500 mL。'}},
+  {adv:true,q:{en:'Put these in order from SMALLEST to largest: 0.4, 35%, 1/2.',zh:'由「小到大」排列：0.4、35%、1/2。'},
+   options:[{en:'0.4, 35%, 1/2',zh:'0.4、35%、1/2'},{en:'35%, 0.4, 1/2',zh:'35%、0.4、1/2'},{en:'1/2, 0.4, 35%',zh:'1/2、0.4、35%'},{en:'35%, 1/2, 0.4',zh:'35%、1/2、0.4'}], a:1,
+   explain:{en:'35% = 0.35, then 0.4, then 1/2 = 0.5.',zh:'35% = 0.35，再來 0.4，最後 1/2 = 0.5。'}},
+  {adv:true,q:{en:'A box is 5 × 4 × 3. What is its surface area? Use 2(lw + lh + wh).',zh:'箱子 5 × 4 × 3 的表面積是多少？用 2(lw + lh + wh)。'},
+   options:[{en:'60',zh:'60'},{en:'47',zh:'47'},{en:'94',zh:'94'},{en:'120',zh:'120'}], a:2,
+   explain:{en:'2(5×4 + 5×3 + 4×3) = 2(20+15+12) = 2 × 47 = 94.',zh:'2(5×4 + 5×3 + 4×3) = 2(20+15+12) = 2 × 47 = 94。'}},
+  {adv:true,q:{en:'A fish tank is 30 cm × 20 cm × 25 cm. What is its volume in cubic centimeters?',zh:'魚缸 30 cm × 20 cm × 25 cm 的體積是多少立方公分？'},
+   options:[{en:'75 cm³',zh:'75 cm³'},{en:'1,500 cm³',zh:'1,500 cm³'},{en:'15,000 cm³',zh:'15,000 cm³'},{en:'150,000 cm³',zh:'150,000 cm³'}], a:2,
+   explain:{en:'Volume = 30 × 20 × 25 = 15,000 cm³.',zh:'體積 = 30 × 20 × 25 = 15,000 cm³。'}},
+  {adv:true,q:{en:'A class begins at 8:15 and ends at 9:50. How long is the class, in minutes?',zh:'一堂課從 8:15 上到 9:50。共有幾分鐘？'},
+   options:[{en:'35',zh:'35'},{en:'95',zh:'95'},{en:'135',zh:'135'},{en:'105',zh:'105'}], a:1,
+   explain:{en:'8:15 to 9:15 is 60 min, plus 35 min to 9:50 = 95 minutes.',zh:'8:15 到 9:15 是 60 分，再加到 9:50 的 35 分 = 95 分鐘。'}}
+);
+/* tag every question added in THIS block as new (advanced ones keep their ⭐ badge instead) */
+Object.keys(_baseQ).forEach(function(k){ CONTENT[k].quiz.forEach(function(q,i){ if(i>=_baseQ[k] && !q.adv) q.isNew=true; }); });
 </script>
 <!-- DATA-INSERT -->
 <script>
