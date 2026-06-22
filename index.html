@@ -191,6 +191,8 @@
   .mfb.ok{color:var(--good)}
   .mfb.no{color:var(--bad)}
   .mfb.key{color:var(--p1); font-weight:700}
+  .keyans{color:#b5306a; font-weight:800; background:#ffe96b; border-radius:5px; padding:0 6px; margin-left:5px; font-size:.92em}
+  .revealmark{box-shadow:inset 0 0 0 2px #ffd24d}
 
   /* effects */
   .star{position:absolute; font-size:1.6rem; animation:floatup .9s ease-out forwards; pointer-events:none}
@@ -461,11 +463,32 @@ function applyShowAnswers(){
       if(fb && !fb.textContent.trim()){ fb.innerHTML='👉 '+bi('Answer: '+q.ans,'答案：'+q.ans); fb.className='mfb key keyrevealed'; }
     });
   });
+  // MATCH game — append each English word's correct Chinese
+  if(CONTENT[key].match){
+    const pairs=CONTENT[key].match.pairs;
+    document.querySelectorAll('#match-'+key+' .mcell[data-side="L"]').forEach(function(cell){
+      if(cell.classList.contains('matched') || cell.querySelector('.keyans')) return;
+      const id=+cell.dataset.id, ans=pairs[id]?pairs[id].r:'';
+      const s=document.createElement('span'); s.className='keyans'; s.textContent=' → '+ans;
+      cell.appendChild(s); cell.classList.add('keyrevealed','revealmark');
+    });
+  }
+  // SORT games — append each card's correct box
+  (CONTENT[key].sorts||[]).forEach(function(sdata,si){
+    document.querySelectorAll('#sort-'+key+'-'+si+' .chip').forEach(function(chip){
+      if(chip.classList.contains('hidden') || chip.querySelector('.keyans')) return;
+      const b=+chip.dataset.b, bname=sdata.buckets[b]?sdata.buckets[b].en:'';
+      const s=document.createElement('span'); s.className='keyans'; s.textContent=' → '+bname;
+      chip.appendChild(s); chip.classList.add('keyrevealed','revealmark');
+    });
+  });
 }
 function hideShownAnswers(){
   document.querySelectorAll('.opt.keyrevealed').forEach(function(o){ o.classList.remove('correct','keyrevealed'); });
   document.querySelectorAll('.explain.keyrevealed').forEach(function(e){ e.hidden=true; e.classList.remove('keyrevealed'); });
   document.querySelectorAll('.mfb.keyrevealed').forEach(function(f){ f.textContent=''; f.className='mfb'; });
+  document.querySelectorAll('.keyans').forEach(function(s){ s.remove(); });
+  document.querySelectorAll('.revealmark').forEach(function(e){ e.classList.remove('keyrevealed','revealmark'); });
 }
 
 /* ---- QUIZ ---- */
