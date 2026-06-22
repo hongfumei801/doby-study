@@ -190,6 +190,7 @@
   .mfb{font-weight:700}
   .mfb.ok{color:var(--good)}
   .mfb.no{color:var(--bad)}
+  .mfb.key{color:var(--p1); font-weight:700}
 
   /* effects */
   .star{position:absolute; font-size:1.6rem; animation:floatup .9s ease-out forwards; pointer-events:none}
@@ -209,6 +210,7 @@
   <h1>🦉 Doby 的期末考複習樂園</h1>
   <p>Grade 5 Final Exam · June 2026 · Korrnell Academy</p>
   <button id="allzhbtn" class="allzh" onclick="toggleAllZh()">🌏 顯示全部中文</button>
+  <button id="allansbtn" class="allzh" onclick="toggleAllAnswers()">🔑 顯示全部答案</button>
   <div id="voicebar" class="voicebar" style="display:none">🔊 美式語音：<select id="voicePick" onchange="setVoice(this.value)" title="選擇朗讀語音（選了會試唸）"></select><span id="voicehint" class="voicehint" style="display:none">　建議用 Microsoft Edge 開啟，可得更自然的語音 ✨</span></div>
 </header>
 
@@ -228,7 +230,7 @@ const TAB_ORDER = [
   {key:'grammar', label:'✍️ Grammar'},
   {key:'math',    label:'🔢 Math'},
 ];
-let activeKey='home', biCounter=0, allZh=false;
+let activeKey='home', biCounter=0, allZh=false, showAns=false;
 
 /* ---- bilingual reveal (class-based: hidden by default, .show reveals) ---- */
 function bi(en,zh){
@@ -432,7 +434,38 @@ function show(key){
     document.querySelectorAll('.zh').forEach(e=>e.classList.add('show'));
     document.querySelectorAll('.zhbtn').forEach(b=>b.classList.add('on'));
   }
+  if(showAns) applyShowAnswers();              // keep "show all answers" on after switching tabs
   window.scrollTo({top:0,behavior:'smooth'});
+}
+/* ---- show / hide the full answer key ---- */
+function toggleAllAnswers(){
+  showAns=!showAns;
+  if(showAns) applyShowAnswers(); else hideShownAnswers();
+  const b=document.getElementById('allansbtn'); if(b) b.textContent = showAns?'🙈 隱藏全部答案':'🔑 顯示全部答案';
+}
+function applyShowAnswers(){
+  const key=activeKey, st=QUIZSTATE[key];
+  if(st){
+    st.qs.forEach(function(q,i){
+      if(st.answered[i]!=null) return;         // leave questions the user already answered
+      const qd=document.getElementById(key+'-q'+i); if(!qd) return;
+      const opts=qd.querySelectorAll('.opt');
+      if(opts[q.a]) opts[q.a].classList.add('correct','keyrevealed');
+      const ex=qd.querySelector('.explain'); if(ex && ex.innerHTML.trim() && ex.hidden){ ex.hidden=false; ex.classList.add('keyrevealed'); }
+    });
+  }
+  (CONTENT[key].mathSets||[]).forEach(function(m,si){
+    const mkey=key+si;
+    m.questions.forEach(function(q,i){
+      const fb=document.getElementById('fb-'+mkey+'-'+i);
+      if(fb && !fb.textContent.trim()){ fb.innerHTML='👉 '+bi('Answer: '+q.ans,'答案：'+q.ans); fb.className='mfb key keyrevealed'; }
+    });
+  });
+}
+function hideShownAnswers(){
+  document.querySelectorAll('.opt.keyrevealed').forEach(function(o){ o.classList.remove('correct','keyrevealed'); });
+  document.querySelectorAll('.explain.keyrevealed').forEach(function(e){ e.hidden=true; e.classList.remove('keyrevealed'); });
+  document.querySelectorAll('.mfb.keyrevealed').forEach(function(f){ f.textContent=''; f.className='mfb'; });
 }
 
 /* ---- QUIZ ---- */
